@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Views for the item_catalog application."""
 
 from item_catalog import app

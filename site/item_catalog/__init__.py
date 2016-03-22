@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """An item catalog website module.
 
 This item catalog website module provides a list of items within a
@@ -13,9 +12,10 @@ from flask import Flask
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
+# Now we can access the configuration variables via app.config["VAR_NAME"].
 
+# Relative, circular imports needed after object creation due
+# to Flask application structure.
 
 from item_catalog import models
 from item_catalog import views
-
-# Now we can access the configuration variables via app.config["VAR_NAME"].

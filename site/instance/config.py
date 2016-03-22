@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
 """Instance specific configuration for item catalog."""
 
-DEBUG = False  # Turns on debugging features in Flask
+DEBUG = True  # Turns on debugging features in Flask
+SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
