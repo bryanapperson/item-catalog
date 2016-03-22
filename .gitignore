@@ -35,6 +35,10 @@ var/
 *.manifest
 *.spec
 
+# SQLlite DBs
+
+*.db
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
