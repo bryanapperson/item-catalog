@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-"""A catalog website module.
+"""An item catalog website module.
 
-This catalog website module provides a list of items within a
-variety of categories as well as provide a user registration and
+This item catalog website module provides a list of items within a
+variety of categories as well as a user registration and
 authentication system. Registered users have the ability to post,
 edit and delete their own items.
 """
