@@ -3,4 +3,4 @@
 
 DEBUG = False  # Disable debugging by default
 BCRYPT_LEVEL = 12  # Configuration for the Flask-Bcrypt extension
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite://item_catalog.db'
