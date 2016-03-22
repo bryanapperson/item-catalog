@@ -37,5 +37,11 @@ To run the unit tests from within the vagrant VM:
 
 ## Function documentation
 
-For documentation on tournament.py, use pydoc. It will format the docstrings
+For documentation on tournament.py, use sphinx. It will format the docstrings
 for easy to view output.
+
+## Instance specific settings
+
+Settings for a particular instance of the item_catalog web application can be
+stored in `catalog/instance/config.py`. These settings will override settings
+in `catalog/config.py`.
