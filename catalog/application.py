@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Run the item_catalog application."""
+"""Development server to run the item_catalog application."""
 
 from item_catalog import app
 import sys
