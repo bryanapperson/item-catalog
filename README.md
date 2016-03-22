@@ -1,6 +1,11 @@
 # item-catalog
 Item catalog project for Udacity Fullstack Web Developer Nanodegree
 
+This item catalog website system provides a list of items within a
+variety of categories as well as a user registration and
+authentication system. Registered users have the ability to post,
+edit and delete their own items.
+
 ## Vagrant
 
 This project comes with a Vagrant development environment. You will need to
