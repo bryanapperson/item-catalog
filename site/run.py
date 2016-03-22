@@ -10,14 +10,12 @@ def main():
     try:
         portnum = 8080
         address = '0.0.0.0'
-        print("Web Server running on port %s" % portnum)
         app.run(host=address, port=portnum)
-    except KeyboardInterrupt:
-        print(" entered, stopping web server....")
-        sys.exit(0)
     except Exception:
         print("Uncaught exception!")
         sys.exit(1)
+    # All is well that ends well.
+    sys.exit(0)
 
 
 if __name__ == '__main__':
