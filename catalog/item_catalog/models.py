@@ -9,7 +9,7 @@ DB = SQLAlchemy(app)
 
 
 class CatalogMeta(DB.Model):
-    """Class to represent web application metadata.
+    """Class to represent item catalog web application metadata.
 
     Description: Can be used to add properties with a value. Such as
                  the web application's title.
@@ -23,13 +23,13 @@ class CatalogMeta(DB.Model):
     value = DB.Column(DB.String(120))
 
     def __init__(self, propertyName, value):
-        """Constructor function for User."""
+        """Constructor function for CatalogMeta object."""
         self.propertyName = propertyName
         self.value = value
 
     def __repr__(self):
-        """Information about this class."""
-        return '<Property %r>' % self.propertyName
+        """Information about this object instance."""
+        return '<propertyName %r>, <value %r>' % self.propertyName, self.value
 
 
 class User(DB.Model):
