@@ -8,7 +8,7 @@ from item_catalog import db_actions
 
 @app.route('/')
 @app.route('/catalog/')
-def index():
+def index_page():
     """Index page view."""
     page = "Recently Added Items"
     categories = db_actions.all_category_infomation()
@@ -20,7 +20,7 @@ def index():
 
 
 @app.route('/catalog/<string:category_name>/')
-def category(category_name):
+def category_page(category_name):
     """Display items in <category_name> category."""
     page = ''
     items = ''
@@ -32,7 +32,7 @@ def category(category_name):
 
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/')
-def category(category_name, item_name):
+def item_page(category_name, item_name):
     """Display items in <category_name> category."""
     page = item_name
     items = ''
