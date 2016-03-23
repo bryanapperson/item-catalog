@@ -3,6 +3,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from item_catalog import app
+import os
 
 # Global database
 DB = SQLAlchemy(app)
@@ -18,6 +19,7 @@ class CatalogMeta(DB.Model):
                              create.
             <value> - a string for a value associated with the propertyName
     """
+    __tablename__ = 'catalog_meta'
     id = DB.Column(DB.Integer, primary_key=True)
     propertyName = DB.Column(DB.String(80), unique=True)
     value = DB.Column(DB.String(120))
@@ -34,6 +36,7 @@ class CatalogMeta(DB.Model):
 
 class User(DB.Model):
     """Class to represent web application user."""
+    __tablename__ = 'users'
     id = DB.Column(DB.Integer, primary_key=True)
     username = DB.Column(DB.String(80), unique=True)
     email = DB.Column(DB.String(120), unique=True)
@@ -47,6 +50,42 @@ class User(DB.Model):
         """Information about this class."""
         return '<User %r>' % self.username
 
-# Create all models in DB
 
-DB.create_all()
+class Category(DB.Model):
+    """A category of items."""
+    __tablename__ = 'categories'
+    # Table mapping
+    name = DB.Column(DB.String(80), nullable=False)
+    id = DB.Column(DB.Integer, primary_key=True)
+
+
+class CatalogItem(DB.Model):
+    """An item in a category."""
+    __tablename__ = 'catalog_items'
+    # Table mapping
+    name = DB.Column(DB.String(80), nullable=False)
+    id = DB.Column(DB.Integer, primary_key=True)
+    description = DB.Column(DB.String(250))
+    price = DB.Column(DB.String(8))
+    category_id = DB.Column(DB.Integer, DB.ForeignKey('categories.id'))
+    category = DB.relationship(Category)
+
+
+def create_db():
+    """Create the initial database."""
+    DB.create_all()
+
+
+def model_population():
+    """Populate the DB if it is SQLite and does not exist."""
+    db_string = app.config['SQLALCHEMY_DATABASE_URI']
+    if 'sqlite:' in db_string:
+        db_string = db_string.split('/')[-1]
+        db_string = os.getcwd() + '/item_catalog/' + db_string
+        if not os.path.isfile(db_string):
+            create_db()
+            print ("Creating DB.")
+
+
+# Call DB population check
+model_population()
