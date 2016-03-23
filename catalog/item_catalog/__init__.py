@@ -14,7 +14,7 @@ app = Flask(__name__, instance_relative_config=True)
 # Load default configuration
 app.config.from_object('config')
 # Load overrides for local instance
-app.config.from_pyfile('config.py')
+app.config.from_pyfile('instance_configuration.py')
 # Now we can access the configuration variables via app.config["VAR_NAME"].
 
 # Relative, circular imports needed after object creation due
