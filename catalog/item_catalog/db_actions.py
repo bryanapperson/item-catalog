@@ -13,6 +13,30 @@ def all_category_infomation():
     return categories
 
 
+def category_by_name(cat_name):
+    """Return information about a category with a matching <cat_name>."""
+    cat_db = models.Category
+    category = models.DB.session.query(cat_db).filter(cat_db.name ==
+                                                      cat_name).one()
+    return category
+
+
+def all_items_in_category(category_id):
+    """Return all items in a given category <category_id>."""
+    item_db = models.CatalogItem
+    items = models.DB.session.query(item_db).filter(item_db.category_id ==
+                                                    category_id)
+    return items
+
+
+def item_by_name(item_name):
+    """Return information about an item with a matching <item_name>."""
+    item_db = models.CatalogItem
+    item = models.DB.session.query(item_db).filter(item_db.name ==
+                                                   item_name).one()
+    return item
+
+
 def recent_items(number=10):
     """Return interger <number> of the most recent items added."""
     items = models.CatalogItem
