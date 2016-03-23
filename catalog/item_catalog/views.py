@@ -30,6 +30,7 @@ def category(category_name):
                            page_items=items,
                            pagename=page)
 
+
 @app.route('/catalog/<string:category_name>/<string:item_name>/')
 def category(category_name, item_name):
     """Display items in <category_name> category."""
