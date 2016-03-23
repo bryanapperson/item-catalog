@@ -40,12 +40,12 @@
         <div class="medium-9 columns">
             <div class="row">
                 <div class="9 columns">
-                    <h2 class="text-center">Recently Added Items</h2>
+                    <h2 class="text-center">{{pagename}}</h2>
                 </div>
             </div>
             <div class="row">
                 <div class="row small-up-2 medium-up-3 large-up-4">
-                    {% for item in recent_items %}
+                    {% for item in page_items %}
                     <div class="column">
                         <img class="thumbnail" src="http://placehold.it/550x550">
                         <h5>{{item.name}}</h5>
