@@ -25,6 +25,11 @@ def sample_data():
     pass
 
 
+def create_db():
+    """Create the initial database."""
+    models.DB.create_all()
+
+
 def model_population():
     """Populate the DB if it is SQLite and does not exist."""
     db_string = app.config['SQLALCHEMY_DATABASE_URI']
@@ -32,9 +37,12 @@ def model_population():
         db_string = db_string.split('/')[-1]
         db_string = os.getcwd() + '/item_catalog/' + db_string
         if not os.path.isfile(db_string):
-            models.create_db()
             print ("Creating DB.")
-
+            create_db()
+            print ("DB Created.")
+            print ("Populating sample data.")
+            sample_data()
+            print ("Populated sample data.")
 
 # Call DB population check
 model_population()

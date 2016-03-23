@@ -3,7 +3,6 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from item_catalog import app
-import os
 
 # Global database
 DB = SQLAlchemy(app)
@@ -69,8 +68,3 @@ class CatalogItem(DB.Model):
     price = DB.Column(DB.String(8))
     category_id = DB.Column(DB.Integer, DB.ForeignKey('categories.id'))
     category = DB.relationship(Category)
-
-
-def create_db():
-    """Create the initial database."""
-    DB.create_all()
