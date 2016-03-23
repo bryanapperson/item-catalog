@@ -29,3 +29,14 @@ def category(category_name):
                            categories=categories,
                            page_items=items,
                            pagename=page)
+
+@app.route('/catalog/<string:category_name>/<string:item_name>/')
+def category(category_name, item_name):
+    """Display items in <category_name> category."""
+    page = item_name
+    items = ''
+    categories = db_actions.all_category_infomation()
+    return render_template('index.html',
+                           categories=categories,
+                           page_items=items,
+                           pagename=page)
