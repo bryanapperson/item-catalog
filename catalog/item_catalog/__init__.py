@@ -20,5 +20,6 @@ app.config.from_pyfile('config.py')
 # Relative, circular imports needed after object creation due
 # to Flask application structure.
 
+from item_catalog import db_actions
 from item_catalog import models
 from item_catalog import views
