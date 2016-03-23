@@ -24,10 +24,9 @@
             <div class="sticky" data-sticky data-anchor="content">
                 <h4>Categories</h4>
                 <ul>
-                    <li><a href="#">Skyler</a></li>
-                    <li><a href="#">Jesse</a></li>
-                    <li><a href="#">Mike</a></li>
-                    <li><a href="#">Holly</a></li>
+                    {% for category in categories %}
+                    <li><a href="#">{{category.name}}</a></li>
+                    {% endfor %}
                 </ul>
                 <h4>Authors</h4>
                 <ul>
@@ -38,65 +37,85 @@
                 </ul>
             </div>
         </div>
-        <div class="medium-8 columns">
-            <div class="blog-post">
-                <h3>Awesome blog post title <small>3/6/2015</small></h3>
-                <img class="thumbnail" src="http://placehold.it/850x350">
-                <p>Praesent id metus massa, ut blandit odio. Proin quis tortor orci. Etiam at risus et justo dignissim congue. Donec congue lacinia dui, a porttitor lectus condimentum laoreet. Nunc eu ullamcorper orci. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus.</p>
-                <div class="callout">
-                    <ul class="menu simple">
-                        <li><a href="#">Author: Mike Mikers</a></li>
-                        <li><a href="#">Comments: 3</a></li>
-                    </ul>
+        <div class="medium-9 columns">
+            <div class="row">
+                <div class="9 columns">
+                    <h2 class="text-center">Recently Added Items</h2>
                 </div>
             </div>
-            <div class="blog-post">
-                <h3>Awesome blog post title <small>3/6/2015</small></h3>
-                <img class="thumbnail" src="http://placehold.it/850x350">
-                <p>Praesent id metus massa, ut blandit odio. Proin quis tortor orci. Etiam at risus et justo dignissim congue. Donec congue lacinia dui, a porttitor lectus condimentum laoreet. Nunc eu ullamcorper orci. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus.</p>
-                <div class="callout">
-                    <ul class="menu simple">
-                        <li><a href="#">Author: Mike Mikers</a></li>
-                        <li><a href="#">Comments: 3</a></li>
-                    </ul>
+            <div class="row">
+                <div class="row small-up-2 medium-up-3 large-up-4">
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
+                    <div class="column">
+                        <img class="thumbnail" src="http://placehold.it/550x550">
+                        <h5>My Site</h5>
+                    </div>
                 </div>
             </div>
-            <div class="blog-post">
-                <h3>Awesome blog post title <small>3/6/2015</small></h3>
-                <img class="thumbnail" src="http://placehold.it/850x350">
-                <p>Praesent id metus massa, ut blandit odio. Proin quis tortor orci. Etiam at risus et justo dignissim congue. Donec congue lacinia dui, a porttitor lectus condimentum laoreet. Nunc eu ullamcorper orci. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus.</p>
-                <div class="callout">
-                    <ul class="menu simple">
-                        <li><a href="#">Author: Mike Mikers</a></li>
-                        <li><a href="#">Comments: 3</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="blog-post">
-                <h3>Awesome blog post title <small>3/6/2015</small></h3>
-                <img class="thumbnail" src="http://placehold.it/850x350">
-                <p>Praesent id metus massa, ut blandit odio. Proin quis tortor orci. Etiam at risus et justo dignissim congue. Donec congue lacinia dui, a porttitor lectus condimentum laoreet. Nunc eu ullamcorper orci. Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus.</p>
-                <div class="callout">
-                    <ul class="menu simple">
-                        <li><a href="#">Author: Mike Mikers</a></li>
-                        <li><a href="#">Comments: 3</a></li>
-                    </ul>
+            <div class="row">
+                <div class="medium-9 columns">
+                    <div class="pagination-centered">
+                        <ul class="pagination">
+                            <li class="arrow unavailable"><a href="">&laquo;</a></li>
+                            <li class="current"><a href="">1</a></li>
+                            <li><a href="">2</a></li>
+                            <li><a href="">3</a></li>
+                            <li><a href="">4</a></li>
+                            <li class="unavailable"><a href="">&hellip;</a></li>
+                            <li><a href="">12</a></li>
+                            <li><a href="">13</a></li>
+                            <li class="arrow"><a href="">&raquo;</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row column">
-        <ul class="pagination" role="navigation" aria-label="Pagination">
-            <li class="disabled">Previous</li>
-            <li class="current"><span class="show-for-sr">You're on page</span> 1</li>
-            <li><a href="#" aria-label="Page 2">2</a></li>
-            <li><a href="#" aria-label="Page 3">3</a></li>
-            <li><a href="#" aria-label="Page 4">4</a></li>
-            <li class="ellipsis"></li>
-            <li><a href="#" aria-label="Page 12">12</a></li>
-            <li><a href="#" aria-label="Page 13">13</a></li>
-            <li><a href="#" aria-label="Next page">Next</a></li>
-        </ul>
+    <div class="footer">
+    <p class="text-left">Item Catalog</p>
     </div>
     <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
