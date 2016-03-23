@@ -4,6 +4,7 @@
 from flask import render_template
 from item_catalog import app
 from item_catalog import db_actions
+from item_catalog import gen_actions
 
 
 @app.route('/')
@@ -24,22 +25,18 @@ def index_page():
 def category_page(category_name):
     """Display items in <category_name> category."""
     # Setup initial values
-    found = False
     num_items = 0
     categories = db_actions.all_category_infomation()
     # Handle categories that don't exist
-    for category in categories:
-        if category_name == category.name:
-            found = True
-    if found is False:
+    if gen_actions.check_category_exists(category_name) is False:
         page = 'Oops... Error 404'
         return render_template('error.html',
                                categories=categories,
                                pagename=page), 404
-        pass
     # Found category, build variables for template
+    category_info = db_actions.category_by_name(category_name)
     page = 'Category: ' + category_name + ' (' + str(num_items) + ' items)'
-    items = ''
+    items = db_actions.all_items_in_category(category_info.id)
     # Return page
     return render_template('index.html',
                            categories=categories,
@@ -49,13 +46,21 @@ def category_page(category_name):
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/')
 def item_page(category_name, item_name):
-    """Display items in <category_name> category."""
-    page = item_name
-    items = ''
+    """Display information about a given <item_name> in <category_name>."""
     categories = db_actions.all_category_infomation()
-    return render_template('index.html',
+    # If the item is not in the category or the category does not exist
+    # Return 404.
+    if gen_actions.check_cat_item_exists(category_name, item_name) is False:
+        page = 'Oops... Error 404'
+        return render_template('error.html',
+                               categories=categories,
+                               pagename=page), 404
+    # The item and category exist, build the page.
+    page = item_name
+    item = db_actions.item_by_name(item_name)
+    return render_template('item.html',
                            categories=categories,
-                           page_items=items,
+                           page_item=item,
                            pagename=page)
 
 
