@@ -25,7 +25,7 @@
                 <h4>Categories</h4>
                 <ul>
                     {% for category in categories %}
-                    <li><a href="#">{{category.name}}</a></li>
+                    <li><a href="{{ url_for('category_page', category_name=category.name) }}">{{category.name}}</a></li>
                     {% endfor %}
                 </ul>
                 <h4>Authors</h4>
