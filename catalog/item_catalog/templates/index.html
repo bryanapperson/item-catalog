@@ -25,7 +25,7 @@
                 <h4>Categories</h4>
                 <ul>
                     {% for category in categories %}
-                    <li><a href="#">{{category.name}}</a></li>
+                    <li><a href="{{ url_for('category_page', category_name=category.name) }}">{{category.name}}</a></li>
                     {% endfor %}
                 </ul>
                 <h4>Authors</h4>
@@ -48,7 +48,7 @@
                     {% for item in page_items %}
                     <div class="column">
                         <img class="thumbnail" src="http://placehold.it/550x550">
-                        <h5>{{item.name}}</h5>
+                        <h5 class="text-center"><a href="{{ url_for('item_page', category_name=category_info.name, item_name=item.name) }}">{{item.name}}</a></h5>
                     </div>
                     {% endfor %}
                 </div>

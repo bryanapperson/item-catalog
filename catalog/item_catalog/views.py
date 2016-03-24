@@ -38,6 +38,7 @@ def category_page(category_name):
     # Return page
     return render_template('index.html',
                            categories=categories,
+                           category_info=category_info,
                            page_items=items,
                            pagename=page)
 
@@ -56,7 +57,7 @@ def item_page(category_name, item_name):
     page = item_name
     return render_template('item.html',
                            categories=categories,
-                           category=category,
+                           category_info=category,
                            page_item=item,
                            pagename=page)
 
