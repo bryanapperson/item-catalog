@@ -4,74 +4,55 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Item Catalog | {{pagename}}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <ul class="menu">
-                <li class="menu-text" ><a href="{{ url_for('index_page') }}">Item Catalog</a></li>
-            </ul>
-        </div>
-        <div class="top-bar-right">
-            <ul class="menu">
-                <li class="menu-text"><a href="#">Login</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="row" id="content">
-        <div class="medium-3 columns" data-sticky-container>
-            <div class="sticky" data-sticky data-anchor="content">
-                <h4>Categories</h4>
-                <ul>
-                    {% for category in categories %}
-                    <li><a href="{{ url_for('category_page', category_name=category.name) }}">{{category.name}}</a></li>
-                    {% endfor %}
+    <header>
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <ul class="menu">
+                    <li class="menu-text" ><a href="{{ url_for('index_page') }}">Item Catalog</a></li>
                 </ul>
-                <h4>Authors</h4>
-                <ul>
-                    <li><a href="#">Skyler</a></li>
-                    <li><a href="#">Jesse</a></li>
-                    <li><a href="#">Mike</a></li>
-                    <li><a href="#">Holly</a></li>
+            </div>
+            <div class="top-bar-right">
+                <ul class="menu">
+                    <li class="menu-text"><a href="#">Login</a></li>
                 </ul>
             </div>
         </div>
-        <div class="medium-9 columns">
-            <div class="row">
-                <div class="9 columns">
-                    <h2 class="text-center">{{pagename}}</h2>
+    </header>
+    <content>
+        <div class="row" id="content">
+            <div class="medium-3 columns" data-sticky-container>
+                <div class="sticky" data-sticky data-anchor="content">
+                    <h4>Categories</h4>
+                    <ul>
+                        {% for category in categories %}
+                        <li><a href="{{ url_for('category_page', category_name=category.name) }}">{{category.name}}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-            <div class="row">
-                <div class="12 columns">
-                    <p><img src="{{ url_for('static', filename='img/default/placeholder.png') }}" /></p>
-                    <h5><b>Price:</b> ${{page_item.price}}</h5>
-                    <p><b>Description:</b> {{page_item.description}}</p>
+            <div class="medium-9 columns">
+                <div class="row">
+                    <div class="9 columns">
+                        <h2 class="text-center">{{pagename}}</h2>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="medium-6 medium-centered columns">
-                    <div class="pagination-centered">
-                        <ul class="pagination">
-                            <li class="arrow unavailable"><a href="">&laquo;</a></li>
-                            <li class="current"><a href="">1</a></li>
-                            <li><a href="">2</a></li>
-                            <li><a href="">3</a></li>
-                            <li><a href="">4</a></li>
-                            <li class="unavailable"><a href="">&hellip;</a></li>
-                            <li><a href="">12</a></li>
-                            <li><a href="">13</a></li>
-                            <li class="arrow"><a href="">&raquo;</a></li>
-                        </ul>
+                <div class="row">
+                    <div class="12 columns">
+                        <p><img src="{{ url_for('static', filename='img/default/placeholder.png') }}" /></p>
+                        <h5><b>Price:</b> ${{page_item.price}}</h5>
+                        <p><b>Description:</b> {{page_item.description}}</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="footer">
-    <p class="text-center">Item Catalog Web Application</p>
-    </div>
+    </content>
+    <footer>
+        <p class="text-center">Item Catalog Web Application</p>
+    </footer>
     <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
     <script>

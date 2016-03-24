@@ -1,3 +1,7 @@
 /**
  * Contains CSS specific to the item-catalog app.
  */
+
+footer {
+    background-color: #e6e6e6;
+}
