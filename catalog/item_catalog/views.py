@@ -43,6 +43,58 @@ def category_page(category_name):
                            pagename=page)
 
 
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_page():
+    """View for editing system wide settings."""
+    # TODO(Catalog admin view)
+    pass
+
+
+@app.route('/catalog/new', methods=['GET', 'POST'])
+def new_category():
+    """Dialog for adding a new category to the catalog."""
+    # TODO(Add new category view)
+    pass
+
+
+@app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
+def edit_category():
+    """Dialog for adding a new item to the catalog."""
+    # TODO(Edit category view)
+    pass
+
+
+@app.route('/catalog/<string:category_name>/delete',
+           methods=['GET', 'POST'])
+def delete_item():
+    """Dialog for deleteing a category from the catalog."""
+    # TODO(delete category view)
+    pass
+
+
+@app.route('/catalog/<string:category_name>/new')
+def new_item(category_name):
+    """Dialog for adding a new item to a given <category_name>."""
+    # TODO(Add new item view)
+    pass
+
+
+@app.route('/catalog/<string:category_name>/<string:item_name>/edit',
+           methods=['GET', 'POST'])
+def edit_item():
+    """Dialog for editing an item in the catalog."""
+    # TODO(Edit item view)
+    pass
+
+
+@app.route('/catalog/<string:category_name>/<string:item_name>/delete',
+           methods=['GET', 'POST'])
+def delete_item():
+    """Dialog for deleteing an item from the catalog."""
+    # TODO(delete item view)
+    pass
+
+
 @app.route('/catalog/<string:category_name>/<string:item_name>/')
 def item_page(category_name, item_name):
     """Display information about a given <item_name> in <category_name>."""
