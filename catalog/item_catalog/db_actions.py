@@ -69,7 +69,7 @@ def sample_items():
     # Information for items
     price_list = ['18.99', '21.99', '6.99', '12.99', '499.99', '69.99',
                   '999.99', '199.99', '69.99', '129.99', '139.99', '9.99']
-    item_category_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 2, 4, 8]
+    item_category_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 5, 7]
     item_name_list = ['Soccer Ball', 'Basketball', 'Baseball', 'Frisbee',
                       'Snowboard', 'Grappling Hook', 'Foosball Table',
                       'Ice Skates', 'Hockey Stick', 'Catcher\'s Mit',

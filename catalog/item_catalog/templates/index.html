@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Item Catalog | Welcome</title>
+    <title>Item Catalog | {{pagename}}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}">
 </head>
 <body>
@@ -49,6 +49,7 @@
                     <div class="column">
                         <img class="thumbnail" src="{{ url_for('static', filename='img/default/placeholder.png') }}">
                         <h5 class="text-center"><a href="{{ url_for('item_page', category_name=item.category.name, item_name=item.name) }}">{{item.name}}</a></h5>
+                        <h6 class="text-center"><b>Price:</b> ${{item.price}}</h6>
                     </div>
                     {% endfor %}
                 </div>
