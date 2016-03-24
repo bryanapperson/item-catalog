@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 """Views for the item_catalog application."""
 
-from flask import redirect
 from flask import render_template
-from flask import url_for
 from item_catalog import app
 from item_catalog import db_actions
 from item_catalog import gen_actions
