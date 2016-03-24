@@ -54,7 +54,7 @@ class Category(DB.Model):
     """A category of items."""
     __tablename__ = 'categories'
     # Table mapping
-    name = DB.Column(DB.String(80), nullable=False)
+    name = DB.Column(DB.String(80), unique=True, nullable=False)
     id = DB.Column(DB.Integer, primary_key=True)
 
 
@@ -62,7 +62,7 @@ class CatalogItem(DB.Model):
     """An item in a category."""
     __tablename__ = 'items'
     # Table mapping
-    name = DB.Column(DB.String(80), nullable=False)
+    name = DB.Column(DB.String(80), unique=True, nullable=False)
     id = DB.Column(DB.Integer, primary_key=True)
     description = DB.Column(DB.String(250))
     price = DB.Column(DB.String(8))
