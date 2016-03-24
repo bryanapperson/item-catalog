@@ -10,12 +10,12 @@
     <div class="top-bar">
         <div class="top-bar-left">
             <ul class="menu">
-                <li class="menu-text">Item Catalog</li>
+                <li class="menu-text" ><a href="{{ url_for('index_page') }}">Item Catalog</a></li>
             </ul>
         </div>
         <div class="top-bar-right">
             <ul class="menu">
-                <li><a href="#">Login</a></li>
+                <li class="menu-text"><a href="#">Login</a></li>
             </ul>
         </div>
     </div>
@@ -47,14 +47,14 @@
                 <div class="row small-up-2 medium-up-3 large-up-4">
                     {% for item in page_items %}
                     <div class="column">
-                        <img class="thumbnail" src="http://placehold.it/550x550">
-                        <h5 class="text-center"><a href="{{ url_for('item_page', category_name=category_info.name, item_name=item.name) }}">{{item.name}}</a></h5>
+                        <img class="thumbnail" src="{{ url_for('static', filename='img/default/placeholder.png') }}">
+                        <h5 class="text-center"><a href="{{ url_for('item_page', category_name=item.category.name, item_name=item.name) }}">{{item.name}}</a></h5>
                     </div>
                     {% endfor %}
                 </div>
             </div>
             <div class="row">
-                <div class="medium-9 columns">
+                <div class="medium-6 medium-centered columns">
                     <div class="pagination-centered">
                         <ul class="pagination">
                             <li class="arrow unavailable"><a href="">&laquo;</a></li>

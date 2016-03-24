@@ -13,7 +13,7 @@ def check_category_exists(category_name):
     return True, category
 
 
-def check_item_exits(item_name):
+def check_item_exists(item_name):
     """Check if an item exists given an <item_name>."""
     try:
         item = db_actions.item_by_name(item_name)
@@ -31,7 +31,7 @@ def check_cat_item_exists(category_name, item_name):
     cat_satus, category = check_category_exists(category_name)
     if cat_satus is False:
         return False, None, None
-    item_status, item = check_item_exits(item_name)
+    item_status, item = check_item_exists(item_name)
     if item_status is False:
         return False, category, None
     if item.category_id == category.id:
