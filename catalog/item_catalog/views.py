@@ -28,13 +28,11 @@ def category_page(category_name):
     num_items = 0
     categories = db_actions.all_category_infomation()
     # Handle categories that don't exist
-    if gen_actions.check_category_exists(category_name) is False:
-        page = 'Oops... Error 404'
-        return render_template('error.html',
-                               categories=categories,
-                               pagename=page), 404
+    exists, category_info = gen_actions.check_category_exists(category_name)
+    if exists is False:
+        return gen_actions.return_404()
     # Found category, build variables for template
-    category_info = db_actions.category_by_name(category_name)
+    # TODO(Correctly count number of items)
     page = 'Category: ' + category_name + ' (' + str(num_items) + ' items)'
     items = db_actions.all_items_in_category(category_info.id)
     # Return page
@@ -50,16 +48,15 @@ def item_page(category_name, item_name):
     categories = db_actions.all_category_infomation()
     # If the item is not in the category or the category does not exist
     # Return 404.
-    if gen_actions.check_cat_item_exists(category_name, item_name) is False:
-        page = 'Oops... Error 404'
-        return render_template('error.html',
-                               categories=categories,
-                               pagename=page), 404
+    exists, category, item = gen_actions.check_cat_item_exists(category_name,
+                                                               item_name)
+    if exists is False:
+        return gen_actions.return_404()
     # The item and category exist, build the page.
     page = item_name
-    item = db_actions.item_by_name(item_name)
     return render_template('item.html',
                            categories=categories,
+                           category=category,
                            page_item=item,
                            pagename=page)
 
@@ -69,8 +66,4 @@ def item_page(category_name, item_name):
 @app.errorhandler(404)
 def page_not_found(e):
     """Handle general 404 not found with custom page."""
-    page = 'Oops... Error 404'
-    categories = db_actions.all_category_infomation()
-    return render_template('error.html',
-                           categories=categories,
-                           pagename=page), 404
+    return gen_actions.return_404()
