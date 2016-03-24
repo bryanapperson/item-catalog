@@ -136,7 +136,6 @@ def logout():
     # TODO(log out sucessfully view)
     return gen_actions.return_404()
 
-
 # JSON API
 
 
@@ -160,7 +159,6 @@ def catalog_json():
     # TODO(entire catalog JSON API)
     return gen_actions.return_404()
 
-
 # Atom feeds
 
 
@@ -169,7 +167,6 @@ def recent_atom():
     """ATOM API/feed for recent items."""
     # TODO(ATOM API/feed for recent items)
     return gen_actions.return_404()
-
 
 # General error handling
 
