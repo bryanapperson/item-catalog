@@ -66,7 +66,7 @@ def edit_category():
 
 @app.route('/catalog/<string:category_name>/delete',
            methods=['GET', 'POST'])
-def delete_item():
+def delete_category():
     """Dialog for deleteing a category from the catalog."""
     # TODO(delete category view)
     pass
