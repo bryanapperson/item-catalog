@@ -10,12 +10,12 @@
     <div class="top-bar">
         <div class="top-bar-left">
             <ul class="menu">
-                <li class="menu-text">Item Catalog</li>
+                <li class="menu-text" ><a href="{{ url_for('index_page') }}">Item Catalog</a></li>
             </ul>
         </div>
         <div class="top-bar-right">
             <ul class="menu">
-                <li><a href="#">Login</a></li>
+                <li class="menu-text"><a href="#">Login</a></li>
             </ul>
         </div>
     </div>
@@ -45,11 +45,12 @@
             </div>
             <div class="row">
                 <div class="12 columns">
+                    <p><img src="{{ url_for('static', filename='img/default/placeholder.png') }}" /></p>
                     <p>{{page_item.description}}</p>
                 </div>
             </div>
             <div class="row">
-                <div class="medium-9 columns">
+                <div class="medium-6 medium-centered columns">
                     <div class="pagination-centered">
                         <ul class="pagination">
                             <li class="arrow unavailable"><a href="">&laquo;</a></li>
