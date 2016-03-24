@@ -6,6 +6,8 @@ from item_catalog import app
 from item_catalog import db_actions
 from item_catalog import gen_actions
 
+# Home/Catalog main page
+
 
 @app.route('/')
 @app.route('/catalog/')
@@ -18,6 +20,17 @@ def index_page():
                            categories=categories,
                            page_items=recent_items,
                            pagename=page)
+
+# Catalog management - not implemented
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_page():
+    """View for editing system wide settings."""
+    # TODO(Catalog admin view)
+    return gen_actions.return_404()
+
+# Category management
 
 
 @app.route('/catalog/<string:category_name>/')
@@ -43,40 +56,34 @@ def category_page(category_name):
                            pagename=page)
 
 
-@app.route('/admin', methods=['GET', 'POST'])
-def admin_page():
-    """View for editing system wide settings."""
-    # TODO(Catalog admin view)
-    pass
-
-
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def new_category():
     """Dialog for adding a new category to the catalog."""
     # TODO(Add new category view)
-    pass
+    return gen_actions.return_404()
 
 
 @app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
 def edit_category():
     """Dialog for adding a new item to the catalog."""
     # TODO(Edit category view)
-    pass
+    return gen_actions.return_404()
 
 
-@app.route('/catalog/<string:category_name>/delete',
-           methods=['GET', 'POST'])
+@app.route('/catalog/<string:category_name>/delete', methods=['GET', 'POST'])
 def delete_category():
     """Dialog for deleteing a category from the catalog."""
     # TODO(delete category view)
-    pass
+    return gen_actions.return_404()
+
+# Item management
 
 
 @app.route('/catalog/<string:category_name>/new', methods=['GET', 'POST'])
 def new_item(category_name):
     """Dialog for adding a new item to a given <category_name>."""
     # TODO(Add new item view)
-    pass
+    return gen_actions.return_404()
 
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/edit',
@@ -84,7 +91,7 @@ def new_item(category_name):
 def edit_item():
     """Dialog for editing an item in the catalog."""
     # TODO(Edit item view)
-    pass
+    return gen_actions.return_404()
 
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/delete',
@@ -92,7 +99,7 @@ def edit_item():
 def delete_item():
     """Dialog for deleteing an item from the catalog."""
     # TODO(delete item view)
-    pass
+    return gen_actions.return_404()
 
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/')
@@ -113,19 +120,46 @@ def item_page(category_name, item_name):
                            page_item=item,
                            pagename=page)
 
+# User Authentication
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_register():
     """Dialog for registering or logging in."""
     # TODO(login or register view)
-    pass
+    return gen_actions.return_404()
 
 
 @app.route('/logout')
 def logout():
     """Dialog for logging out."""
     # TODO(log out sucessfully view)
-    pass
+    return gen_actions.return_404()
+
+
+# JSON API
+
+
+@app.route('/api/json/catalog/<string:category_name>/<string:item_name>/')
+def item_json():
+    """JSON API for single item."""
+    # TODO(single item JSON API)
+    return gen_actions.return_404()
+
+
+@app.route('/api/json/catalog/<string:category_name>/')
+def category_json():
+    """JSON API for single category."""
+    # TODO(single category JSON API)
+    return gen_actions.return_404()
+
+
+@app.route('/api/json/catalog/')
+def catalog_json():
+    """JSON API for entire catalog."""
+    # TODO(entire catalog JSON API)
+    return gen_actions.return_404()
+
 
 # General error handling
 
