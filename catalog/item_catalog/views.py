@@ -161,6 +161,16 @@ def catalog_json():
     return gen_actions.return_404()
 
 
+# Atom feeds
+
+
+@app.route('/api/atom/catalog/recent')
+def recent_atom():
+    """ATOM API/feed for recent items."""
+    # TODO(ATOM API/feed for recent items)
+    return gen_actions.return_404()
+
+
 # General error handling
 
 
