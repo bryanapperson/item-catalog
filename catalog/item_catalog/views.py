@@ -72,7 +72,7 @@ def delete_category():
     pass
 
 
-@app.route('/catalog/<string:category_name>/new')
+@app.route('/catalog/<string:category_name>/new', methods=['GET', 'POST'])
 def new_item(category_name):
     """Dialog for adding a new item to a given <category_name>."""
     # TODO(Add new item view)
