@@ -113,6 +113,20 @@ def item_page(category_name, item_name):
                            page_item=item,
                            pagename=page)
 
+
+@app.route('/login', methods=['GET', 'POST'])
+def login_register():
+    """Dialog for registering or logging in."""
+    # TODO(login or register view)
+    pass
+
+
+@app.route('/logout')
+def logout():
+    """Dialog for logging out."""
+    # TODO(log out sucessfully view)
+    pass
+
 # General error handling
 
 
