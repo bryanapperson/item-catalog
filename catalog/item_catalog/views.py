@@ -63,8 +63,8 @@ def item_page(category_name, item_name):
                            page_item=item,
                            pagename=page)
 
-
 # General error handling
+
 
 @app.errorhandler(404)
 def page_not_found(e):
