@@ -44,7 +44,9 @@
                     <div class="row small-up-2 medium-up-3 large-up-4">
                         {% for item in page_items %}
                         <div class="column">
-                            <img class="thumbnail" src="{{ url_for('static', filename='img/default/placeholder.png') }}">
+                            <a href="{{ url_for('item_page', category_name=item.category.name, item_name=item.name) }}">
+                                <img class="thumbnail" src="{{item.image}}" />
+                            </a>
                             <h5 class="text-center"><a href="{{ url_for('item_page', category_name=item.category.name, item_name=item.name) }}">{{item.name}}</a></h5>
                             <h6 class="text-center"><b>Price:</b> ${{item.price}}</h6>
                         </div>
