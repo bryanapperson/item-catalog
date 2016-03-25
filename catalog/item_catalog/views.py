@@ -4,6 +4,7 @@
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 from flask import url_for
 from item_catalog import app
 from item_catalog import db_actions
@@ -69,7 +70,7 @@ def new_category():
         new = db_actions.create_new_category(cat_name)
         if new is True:
             return redirect(url_for('category_page', category_name=cat_name))
-    return render_template('new_item.html',
+    return render_template('new_category.html',
                            categories=categories)
 
 
@@ -93,7 +94,21 @@ def delete_category():
 def new_item(category_name):
     """Dialog for adding a new item to a given <category_name>."""
     # TODO(Add new item view)
-    return gen_actions.return_404()
+    categories = db_actions.all_category_infomation()
+    if request.method == 'POST':
+        item_name = request.form['name']
+        item_description = request.form['description']
+        item_price = request.form['price']
+        item_image = request.form['image']
+        cat = db_actions.category_by_name(category_name)
+        cat_id = cat.id
+        cat_name = cat.name
+        new = db_actions.create_new_item(item_name, item_description,
+                                         item_price, item_image, cat_id)
+        if new is True:
+            return redirect(url_for('category_page', category_name=cat_name))
+    return render_template('new_item.html',
+                           categories=categories)
 
 
 @app.route('/catalog/<string:category_name>/<string:item_name>/edit',
@@ -177,6 +192,17 @@ def recent_atom():
     """ATOM API/feed for recent items."""
     # TODO(ATOM API/feed for recent items)
     return gen_actions.return_404()
+
+
+# Static asset serving
+
+
+@app.route('/photos/<filename>')
+def uploaded_photo(filename):
+    """Server uploaded photos."""
+    return send_from_directory(app.config['UPLOADED_PHOTOS_URL'],
+                               filename)
+
 
 # General error handling
 
