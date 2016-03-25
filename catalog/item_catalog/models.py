@@ -65,7 +65,7 @@ class CatalogItem(DB.Model):
     name = DB.Column(DB.String(80), unique=True, nullable=False)
     id = DB.Column(DB.Integer, primary_key=True)
     description = DB.Column(DB.String(250))
-    price = DB.Column(DB.Float(2))
+    price = DB.Column(DB.Numeric(scale=2))
     image = DB.Column(DB.String(2000))
     category_id = DB.Column(DB.Integer, DB.ForeignKey('categories.id'))
     category = DB.relationship(Category)

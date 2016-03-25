@@ -29,7 +29,7 @@ def index_page():
 # Catalog management - not implemented
 
 
-@app.route('/admin', methods=['GET', 'POST'])
+@app.route('/action/admin', methods=['GET', 'POST'])
 def admin_page():
     """View for editing system wide settings."""
     # TODO(Catalog admin view)
@@ -39,7 +39,6 @@ def admin_page():
 
 
 @app.route('/catalog/<string:category_name>/')
-@app.route('/catalog/<string:category_name>/items')
 def category_page(category_name):
     """Display items in <category_name> category."""
     # Setup initial values
@@ -61,7 +60,7 @@ def category_page(category_name):
                            pagename=page)
 
 
-@app.route('/catalog/new_category', methods=['GET', 'POST'])
+@app.route('/action/catalog/new_category/', methods=['GET', 'POST'])
 def new_category():
     """Dialog for adding a new category to the catalog."""
     # TODO(Add new category view)
@@ -75,7 +74,7 @@ def new_category():
                            categories=categories)
 
 
-@app.route('/catalog/<string:category_name>/edit_category',
+@app.route('/action/catalog/<string:category_name>/edit_category/',
            methods=['GET', 'POST'])
 def edit_category():
     """Dialog for adding a new item to the catalog."""
@@ -83,7 +82,7 @@ def edit_category():
     return gen_actions.return_404()
 
 
-@app.route('/catalog/<string:category_name>/delete_category',
+@app.route('/action/catalog/<string:category_name>/delete_category/',
            methods=['GET', 'POST'])
 def delete_category():
     """Dialog for deleteing a category from the catalog."""
@@ -93,7 +92,8 @@ def delete_category():
 # Item management
 
 
-@app.route('/catalog/<string:category_name>/new_item', methods=['GET', 'POST'])
+@app.route('/action/catalog/<string:category_name>/new_item/',
+           methods=['GET', 'POST'])
 def new_item(category_name):
     """Dialog for adding a new item to a given <category_name>."""
     # TODO(Add new item view)
@@ -115,7 +115,8 @@ def new_item(category_name):
                            this_category=category_name)
 
 
-@app.route('/catalog/<string:category_name>/<string:item_name>/edit_item',
+@app.route('/action/catalog/<string:category_name>/<string:item_name>/'
+           'edit_item/',
            methods=['GET', 'POST'])
 def edit_item():
     """Dialog for editing an item in the catalog."""
@@ -123,7 +124,8 @@ def edit_item():
     return gen_actions.return_404()
 
 
-@app.route('/catalog/<string:category_name>/<string:item_name>/delete_item',
+@app.route('/action/catalog/<string:category_name>/<string:item_name>/'
+           'delete_item/',
            methods=['GET', 'POST'])
 def delete_item():
     """Dialog for deleteing an item from the catalog."""
