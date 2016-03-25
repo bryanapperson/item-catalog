@@ -36,6 +36,25 @@ def create_new_category(category_name):
         return False
     return True
 
+
+def edit_category(category_name):
+    """Edit category <category_name>.
+
+    Returns True on success.
+    """
+    # TODO(Edit category db_action)
+    pass
+
+
+def delete_category(category_name):
+    """Delete category <category_name>.
+
+    Returns True on success.
+    """
+    # TODO(Delete category db_action)
+    pass
+
+
 # Item management
 
 
@@ -80,6 +99,25 @@ def create_new_item(item_name, item_description, item_price, item_image,
     except Exception:
         return False
     return True
+
+
+def edit_item(item_name, item_description, item_price, item_image,
+              item_category):
+    """Edit <item_name>.
+
+    Returns True on success.
+    """
+    # TODO(Edit item DB action.)
+    pass
+
+
+def delete_item(item_name):
+    """Delete <item_name>.
+
+    Returns True on success.
+    """
+    # TODO(Delete item DB action.)
+    pass
 
 # Begin sample data section
 
