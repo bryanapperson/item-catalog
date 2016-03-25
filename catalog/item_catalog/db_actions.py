@@ -82,18 +82,20 @@ def recent_items(number=10):
     return recent
 
 
-def create_new_item(item_name, item_description, item_price, item_image,
-                    item_category):
+def create_new_item(item_name, item_description, item_price,
+                    item_category, item_image=None):
     """Create a new item <item_name>.
 
     Returns True on success.
     """
     try:
-        new_item = models.CatalogItem(name=item_name,
-                                      description=item_description,
-                                      price=item_price,
-                                      image=item_image,
-                                      category=item_category)
+        if item_image is None:
+            item_image = 'img/default/placeholder.png'
+            new_item = models.CatalogItem(name=item_name,
+                                          description=item_description,
+                                          price=item_price,
+                                          image=item_image,
+                                          category_id=item_category)
         models.DB.session.add(new_item)
         models.DB.session.commit()
     except Exception:
@@ -156,7 +158,7 @@ def sample_items():
                                            item_name_list, desc_list):
         itemobj = models.CatalogItem(name=name,
                                      category_id=category,
-                                     price=price,
+                                     price=float(price),
                                      description=desc)
         models.DB.session.add(itemobj)
         models.DB.session.commit()

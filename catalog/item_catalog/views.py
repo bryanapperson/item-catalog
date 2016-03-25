@@ -6,6 +6,7 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import url_for
+import flask_uploads
 from item_catalog import app
 from item_catalog import db_actions
 from item_catalog import gen_actions
@@ -60,7 +61,7 @@ def category_page(category_name):
                            pagename=page)
 
 
-@app.route('/catalog/new', methods=['GET', 'POST'])
+@app.route('/catalog/new_category', methods=['GET', 'POST'])
 def new_category():
     """Dialog for adding a new category to the catalog."""
     # TODO(Add new category view)
@@ -74,14 +75,16 @@ def new_category():
                            categories=categories)
 
 
-@app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
+@app.route('/catalog/<string:category_name>/edit_category',
+           methods=['GET', 'POST'])
 def edit_category():
     """Dialog for adding a new item to the catalog."""
     # TODO(Edit category view)
     return gen_actions.return_404()
 
 
-@app.route('/catalog/<string:category_name>/delete', methods=['GET', 'POST'])
+@app.route('/catalog/<string:category_name>/delete_category',
+           methods=['GET', 'POST'])
 def delete_category():
     """Dialog for deleteing a category from the catalog."""
     # TODO(delete category view)
@@ -90,7 +93,7 @@ def delete_category():
 # Item management
 
 
-@app.route('/catalog/<string:category_name>/new', methods=['GET', 'POST'])
+@app.route('/catalog/<string:category_name>/new_item', methods=['GET', 'POST'])
 def new_item(category_name):
     """Dialog for adding a new item to a given <category_name>."""
     # TODO(Add new item view)
@@ -99,19 +102,20 @@ def new_item(category_name):
         item_name = request.form['name']
         item_description = request.form['description']
         item_price = request.form['price']
-        item_image = request.form['image']
+        # TODO(Manage product photo item_image = None by default)
         cat = db_actions.category_by_name(category_name)
         cat_id = cat.id
-        cat_name = cat.name
         new = db_actions.create_new_item(item_name, item_description,
-                                         item_price, item_image, cat_id)
+                                         item_price, cat_id)
         if new is True:
-            return redirect(url_for('category_page', category_name=cat_name))
+            return redirect(url_for('item_page', category_name=category_name,
+                                    item_name=item_name))
     return render_template('new_item.html',
-                           categories=categories)
+                           categories=categories,
+                           this_category=category_name)
 
 
-@app.route('/catalog/<string:category_name>/<string:item_name>/edit',
+@app.route('/catalog/<string:category_name>/<string:item_name>/edit_item',
            methods=['GET', 'POST'])
 def edit_item():
     """Dialog for editing an item in the catalog."""
@@ -119,7 +123,7 @@ def edit_item():
     return gen_actions.return_404()
 
 
-@app.route('/catalog/<string:category_name>/<string:item_name>/delete',
+@app.route('/catalog/<string:category_name>/<string:item_name>/delete_item',
            methods=['GET', 'POST'])
 def delete_item():
     """Dialog for deleteing an item from the catalog."""

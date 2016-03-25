@@ -42,10 +42,14 @@
                 </div>
                 <div class="row">
                     <div class="12 columns">
-                        <form action="{{ url_for('new_category')}}" method="post">
-                            <p>Category Name:</p>
+                        <form action="{{ url_for('new_item', category_name=this_category)}}" method="post">
+                            <p>Item Name:</p>
                             <input type="text" size="30" name="name">
-                            <input type="submit" value="Create">
+                            <p>Item Description:</p>
+                            <input type="text" size="30" name="description">
+                            <p>Item Price in USD($):</p>
+                            <input type="number" step="0.01" size="30" name="price">
+                            <input type="submit" value="Create Item">
                         </form>
                     </div>
                 </div>
