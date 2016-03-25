@@ -42,9 +42,11 @@
                 </div>
                 <div class="row">
                     <div class="12 columns">
-                        <p><img src="{{ url_for('static', filename='img/default/placeholder.png') }}" /></p>
-                        <h5><b>Price:</b> ${{page_item.price}}</h5>
-                        <p><b>Description:</b> {{page_item.description}}</p>
+                        <form action="{{ url_for('new_category')}}" method="post">
+                            <p>Category Name:</p>
+                            <input type="text" size="30" name="name">
+                            <input type="submit" value="Create">
+                        </form>
                     </div>
                 </div>
             </div>

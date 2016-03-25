@@ -8,6 +8,7 @@ edit and delete their own items.
 """
 
 from flask import Flask
+from flask_uploads import patch_request_class
 
 # Instantiate Flask application object with relative configuration
 app = Flask(__name__, instance_relative_config=True)
@@ -15,6 +16,8 @@ app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 # Load overrides for local instance
 app.config.from_pyfile('instance_configuration.py')
+# Set maximum upload size to 16MB
+patch_request_class(app)
 # Now we can access the configuration variables via app.config["VAR_NAME"].
 
 # Relative, circular imports needed after object creation due
