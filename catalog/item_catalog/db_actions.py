@@ -5,6 +5,9 @@ from item_catalog import models
 import os
 
 
+# Category management
+
+
 def all_category_infomation():
     """Return all rows of the categories table."""
     category = models.Category
@@ -19,6 +22,20 @@ def category_by_name(cat_name):
     category = models.DB.session.query(cat_db).filter(cat_db.name ==
                                                       cat_name).one()
     return category
+
+
+def create_new_category(category_name):
+    """Create a new category."""
+    try:
+        new_category = models.Category(name=category_name)
+        models.DB.session.add(new_category)
+        models.DB.session.commit()
+    except Exception:
+        return False
+    return True
+
+
+# Item management
 
 
 def all_items_in_category(category_id):

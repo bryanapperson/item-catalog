@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 """Views for the item_catalog application."""
 
+from flask import redirect
 from flask import render_template
+from flask import request
+from flask import url_for
 from item_catalog import app
 from item_catalog import db_actions
 from item_catalog import gen_actions
@@ -60,7 +63,14 @@ def category_page(category_name):
 def new_category():
     """Dialog for adding a new category to the catalog."""
     # TODO(Add new category view)
-    return gen_actions.return_404()
+    categories = db_actions.all_category_infomation()
+    if request.method == 'POST':
+        cat_name = request.form['name']
+        new = db_actions.create_new_category(cat_name)
+        if new is True:
+            return redirect(url_for('category_page', category_name=cat_name))
+    return render_template('new_item.html',
+                           categories=categories)
 
 
 @app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
