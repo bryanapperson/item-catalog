@@ -4,7 +4,6 @@ from item_catalog import app
 from item_catalog import models
 import os
 
-
 # Category management
 
 
@@ -25,7 +24,10 @@ def category_by_name(cat_name):
 
 
 def create_new_category(category_name):
-    """Create a new category."""
+    """Create a new category <category_name>.
+
+    Returns True on success.
+    """
     try:
         new_category = models.Category(name=category_name)
         models.DB.session.add(new_category)
@@ -33,7 +35,6 @@ def create_new_category(category_name):
     except Exception:
         return False
     return True
-
 
 # Item management
 
@@ -60,6 +61,25 @@ def recent_items(number=10):
     recent = models.DB.session.query(items).order_by(items.id.desc()).limit(
         number)
     return recent
+
+
+def create_new_item(item_name, item_description, item_price, item_image,
+                    item_category):
+    """Create a new item <item_name>.
+
+    Returns True on success.
+    """
+    try:
+        new_item = models.CatalogItem(name=item_name,
+                                      description=item_description,
+                                      price=item_price,
+                                      image=item_image,
+                                      category=item_category)
+        models.DB.session.add(new_item)
+        models.DB.session.commit()
+    except Exception:
+        return False
+    return True
 
 # Begin sample data section
 
