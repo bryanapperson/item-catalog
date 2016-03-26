@@ -6,7 +6,6 @@ from flask import render_template
 from flask import request
 from flask import send_from_directory
 from flask import url_for
-import flask_uploads
 from item_catalog import app
 from item_catalog import db_actions
 from item_catalog import gen_actions
@@ -63,23 +62,36 @@ def category_page(category_name):
 @app.route('/action/catalog/new_category/', methods=['GET', 'POST'])
 def new_category():
     """Dialog for adding a new category to the catalog."""
-    # TODO(Add new category view)
     categories = db_actions.all_category_infomation()
+    pagename = "Create A New Category"
     if request.method == 'POST':
         cat_name = request.form['name']
         new = db_actions.create_new_category(cat_name)
         if new is True:
             return redirect(url_for('category_page', category_name=cat_name))
     return render_template('new_category.html',
-                           categories=categories)
+                           categories=categories,
+                           pagename=pagename)
 
 
 @app.route('/action/catalog/<string:category_name>/edit_category/',
            methods=['GET', 'POST'])
-def edit_category():
+def edit_category(category_name):
     """Dialog for adding a new item to the catalog."""
-    # TODO(Edit category view)
-    return gen_actions.return_404()
+    categories = db_actions.all_category_infomation()
+    exists, category_info = gen_actions.check_category_exists(category_name)
+    if exists is False:
+        return gen_actions.return_404()
+    pagename = ("Update Category: " + category_info.name)
+    if request.method == 'POST':
+        cat_name = request.form['name']
+        new = db_actions.edit_category(category_info.name, cat_name)
+        if new is True:
+            return redirect(url_for('category_page', category_name=cat_name))
+    return render_template('edit_category.html',
+                           pagename=pagename,
+                           categories=categories,
+                           category=category_info)
 
 
 @app.route('/action/catalog/<string:category_name>/delete_category/',
@@ -96,14 +108,15 @@ def delete_category():
            methods=['GET', 'POST'])
 def new_item():
     """Dialog for adding a new item to a given <category_name>."""
-    # TODO(Add new item view)
     categories = db_actions.all_category_infomation()
+    pagename = "Create A New Item"
+    # Manage post request for new_item
     if request.method == 'POST':
         item_name = request.form['name']
         item_description = request.form['description']
         item_price = request.form['price']
         category_name = request.form['category']
-        # TODO(Manage product photo item_image = None by default)
+        # TODO(Manage product photo item_image)
         cat = db_actions.category_by_name(category_name)
         cat_id = cat.id
         new = db_actions.create_new_item(item_name, item_description,
@@ -112,16 +125,43 @@ def new_item():
             return redirect(url_for('item_page', category_name=category_name,
                                     item_name=item_name))
     return render_template('new_item.html',
-                           categories=categories)
+                           categories=categories,
+                           pagename=pagename)
 
 
 @app.route('/action/catalog/<string:category_name>/<string:item_name>/'
            'edit_item/',
            methods=['GET', 'POST'])
-def edit_item():
+def edit_item(category_name, item_name):
     """Dialog for editing an item in the catalog."""
     # TODO(Edit item view)
-    return gen_actions.return_404()
+    categories = db_actions.all_category_infomation()
+    # If the item is not in the category or the category does not exist
+    # Return 404.
+    exists, category, item = gen_actions.check_cat_item_exists(category_name,
+                                                               item_name)
+    if exists is False:
+        return gen_actions.return_404()
+    pagename = ("Update Item: " + item.name)
+    # Handle POST request for edit_item
+    if request.method == 'POST':
+        item_name = request.form['name']
+        item_description = request.form['description']
+        item_price = request.form['price']
+        category_name = request.form['category']
+        # TODO(Manage product photo item_image)
+        cat = db_actions.category_by_name(category_name)
+        cat_id = cat.id
+        new = db_actions.create_new_item(item_name, item_description,
+                                         item_price, cat_id)
+        if new is True:
+            return redirect(url_for('item_page', category_name=category_name,
+                                    item_name=item_name))
+    return render_template('edit_item.html',
+                           categories=categories,
+                           category=category,
+                           item=item,
+                           pagename=pagename)
 
 
 @app.route('/action/catalog/<string:category_name>/<string:item_name>/'

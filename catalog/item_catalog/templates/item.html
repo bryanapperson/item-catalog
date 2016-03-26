@@ -19,6 +19,12 @@
                 <ul class="menu">
                     <li class="menu-text"><a href="{{ url_for('new_item') }}">New Item</a></li>
                     <li class="menu-text"><a href="{{ url_for('new_category') }}">New Category</a></li>
+                    {% if category_info %}
+                    <li class="menu-text"><a href="{{ url_for('edit_category', category_name=category_info.name) }}">Edit Category</a></li>
+                    {% if page_item %}
+                    <li class="menu-text"><a href="{{ url_for('edit_item', category_name=category_info.name, item_name=page_item.name) }}">Edit Item</a></li>
+                    {% endif %}
+                    {% endif %}
                     <li class="menu-text"><a href="{{ url_for('login_register') }}">Login</a></li>
                 </ul>
             </div>
