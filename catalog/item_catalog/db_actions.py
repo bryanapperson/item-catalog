@@ -44,10 +44,7 @@ def edit_category(category_old_name, category_new_name):
     """
     try:
         category = category_by_name(category_old_name)
-        if category_old_name == category_new_name:
-            pass
-        else:
-            category.name = category_new_name
+        category.name = category_new_name
         models.DB.session.commit()
     except Exception:
         return False
@@ -125,11 +122,7 @@ def edit_item(old_item_name, new_item_name, item_description, item_price,
         # TODO(Handle item image)
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
-        if old_item_name == new_item_name:
-            pass
-        else:
-            print "updating item name"
-            item.name = new_item_name
+        item.name = new_item_name
         item.description = item_description
         item.price = item_price
         item.image = item_image
