@@ -92,9 +92,9 @@ def delete_category():
 # Item management
 
 
-@app.route('/action/catalog/<string:category_name>/new_item/',
+@app.route('/action/catalog/new_item/',
            methods=['GET', 'POST'])
-def new_item(category_name):
+def new_item():
     """Dialog for adding a new item to a given <category_name>."""
     # TODO(Add new item view)
     categories = db_actions.all_category_infomation()
@@ -102,6 +102,7 @@ def new_item(category_name):
         item_name = request.form['name']
         item_description = request.form['description']
         item_price = request.form['price']
+        category_name = request.form['category']
         # TODO(Manage product photo item_image = None by default)
         cat = db_actions.category_by_name(category_name)
         cat_id = cat.id
@@ -111,8 +112,7 @@ def new_item(category_name):
             return redirect(url_for('item_page', category_name=category_name,
                                     item_name=item_name))
     return render_template('new_item.html',
-                           categories=categories,
-                           this_category=category_name)
+                           categories=categories)
 
 
 @app.route('/action/catalog/<string:category_name>/<string:item_name>/'

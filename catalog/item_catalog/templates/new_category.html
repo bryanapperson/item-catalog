@@ -17,7 +17,8 @@
             </div>
             <div class="top-bar-right">
                 <ul class="menu">
-                    <li class="menu-text"><a href="#">Login</a></li>
+                    <li class="menu-text"><a href="{{ url_for('new_item') }}">New Item</a></li>
+                    <li class="menu-text"><a href="{{ url_for('login_register') }}">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -45,7 +46,7 @@
                         <form action="{{ url_for('new_category')}}" method="post">
                             <p>Category Name:</p>
                             <input type="text" size="30" name="name">
-                            <input type="submit" value="Create">
+                            <input type="submit" value="Create Category">
                         </form>
                     </div>
                 </div>
