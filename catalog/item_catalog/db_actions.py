@@ -37,13 +37,21 @@ def create_new_category(category_name):
     return True
 
 
-def edit_category(category_name):
-    """Edit category <category_name>.
+def edit_category(category_old_name, category_new_name):
+    """Edit category <category_old_name> to <category_new_name>.
 
     Returns True on success.
     """
-    # TODO(Edit category db_action)
-    pass
+    try:
+        category = category_by_name(category_old_name)
+        if category_old_name == category_new_name:
+            pass
+        else:
+            category.name = category_new_name
+        models.DB.session.commit()
+    except Exception:
+        return False
+    return True
 
 
 def delete_category(category_name):
@@ -89,13 +97,15 @@ def create_new_item(item_name, item_description, item_price,
     Returns True on success.
     """
     try:
+        item_image = None
+        # TODO(Handle item image)
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
-            new_item = models.CatalogItem(name=item_name,
-                                          description=item_description,
-                                          price=item_price,
-                                          image=item_image,
-                                          category_id=item_category)
+        new_item = models.CatalogItem(name=item_name,
+                                      description=item_description,
+                                      price=item_price,
+                                      image=item_image,
+                                      category_id=item_category)
         models.DB.session.add(new_item)
         models.DB.session.commit()
     except Exception:
@@ -103,14 +113,31 @@ def create_new_item(item_name, item_description, item_price,
     return True
 
 
-def edit_item(item_name, item_description, item_price, item_image,
-              item_category):
+def edit_item(old_item_name, new_item_name, item_description, item_price,
+              item_category, item_image=None):
     """Edit <item_name>.
 
     Returns True on success.
     """
-    # TODO(Edit item DB action.)
-    pass
+    try:
+        item = item_by_name(old_item_name)
+        item_image = None
+        # TODO(Handle item image)
+        if item_image is None:
+            item_image = '/static/img/default/placeholder.png'
+        if old_item_name == new_item_name:
+            pass
+        else:
+            print "updating item name"
+            item.name = new_item_name
+        item.description = item_description
+        item.price = item_price
+        item.image = item_image
+        item.category_id = item_category
+        models.DB.session.commit()
+    except Exception:
+        return False
+    return True
 
 
 def delete_item(item_name):
