@@ -145,18 +145,18 @@ def edit_item(category_name, item_name):
     pagename = ("Update Item: " + item.name)
     # Handle POST request for edit_item
     if request.method == 'POST':
-        item_name = request.form['name']
+        new_item_name = request.form['name']
         item_description = request.form['description']
         item_price = request.form['price']
         category_name = request.form['category']
         # TODO(Manage product photo item_image)
         cat = db_actions.category_by_name(category_name)
         cat_id = cat.id
-        new = db_actions.create_new_item(item_name, item_description,
-                                         item_price, cat_id)
+        new = db_actions.edit_item(item_name, new_item_name, item_description,
+                                   item_price, cat_id)
         if new is True:
             return redirect(url_for('item_page', category_name=category_name,
-                                    item_name=item_name))
+                                    item_name=new_item_name))
     return render_template('edit_item.html',
                            categories=categories,
                            category=category,
