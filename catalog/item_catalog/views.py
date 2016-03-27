@@ -165,7 +165,6 @@ def delete_category(category_name):
                            category=category_info,
                            pagename=pagename)
 
-
 # Item management
 
 
