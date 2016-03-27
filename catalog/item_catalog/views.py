@@ -138,81 +138,6 @@ def delete_category():
 # Item management
 
 
-@app.route('/action/catalog/new_item/',
-           methods=['GET', 'POST'])
-def new_item():
-    """Dialog for adding a new item to a given <category_name>."""
-    categories = db_actions.all_category_infomation()
-    pagename = "Create A New Item"
-    # Manage post request for new_item
-    if request.method == 'POST':
-        item_name = request.form['name']
-        item_description = request.form['description']
-        item_price = request.form['price']
-        category_name = request.form['category']
-        # TODO(Manage product photo item_image)
-        cat = db_actions.category_by_name(category_name)
-        cat_id = cat.id
-        new = db_actions.create_new_item(item_name, item_description,
-                                         item_price, cat_id)
-        if new is True:
-            return redirect(url_for('item_page', category_name=category_name,
-                                    item_name=item_name))
-        else:
-            # Flash message on failure
-            flash('Failed to create new item.')
-    return render_template('new_item.html',
-                           categories=categories,
-                           pagename=pagename)
-
-
-@app.route('/action/catalog/<string:category_name>/<string:item_name>/'
-           'edit_item/',
-           methods=['GET', 'POST'])
-def edit_item(category_name, item_name):
-    """Dialog for editing an item in the catalog."""
-    # TODO(Edit item view)
-    categories = db_actions.all_category_infomation()
-    # If the item is not in the category or the category does not exist
-    # Return 404.
-    exists, category, item = gen_actions.check_cat_item_exists(category_name,
-                                                               item_name)
-    if exists is False:
-        return gen_actions.return_404()
-    pagename = ("Update Item: " + item.name)
-    # Handle POST request for edit_item
-    if request.method == 'POST':
-        new_item_name = request.form['name']
-        item_description = request.form['description']
-        item_price = request.form['price']
-        category_name = request.form['category']
-        # TODO(Manage product photo item_image)
-        cat = db_actions.category_by_name(category_name)
-        cat_id = cat.id
-        new = db_actions.edit_item(item_name, new_item_name, item_description,
-                                   item_price, cat_id)
-        if new is True:
-            return redirect(url_for('item_page', category_name=category_name,
-                                    item_name=new_item_name))
-        else:
-            # Flash message on failure
-            flash('Failed to edit item.')
-    return render_template('edit_item.html',
-                           categories=categories,
-                           category=category,
-                           item=item,
-                           pagename=pagename)
-
-
-@app.route('/action/catalog/<string:category_name>/<string:item_name>/'
-           'delete_item/',
-           methods=['GET', 'POST'])
-def delete_item():
-    """Dialog for deleteing an item from the catalog."""
-    # TODO(delete item view)
-    return gen_actions.return_404()
-
-
 @app.route('/catalog/<string:category_name>/<string:item_name>/')
 def item_page(category_name, item_name):
     """Display information about a given <item_name> in <category_name>."""
@@ -230,6 +155,105 @@ def item_page(category_name, item_name):
                            category_info=category,
                            page_item=item,
                            pagename=page)
+
+
+@app.route('/action/catalog/new_item/',
+           methods=['GET', 'POST'])
+def new_item():
+    """Dialog for adding a new item to a given <category_name>."""
+    categories = db_actions.all_category_infomation()
+    pagename = "Create A New Item"
+    # Manage post request for new_item
+    if request.method == 'POST':
+        item_name = request.form['name']
+        item_description = request.form['description']
+        item_price = request.form['price']
+        category_name = request.form['category']
+        check = gen_actions.check_item_exists(item_name)
+        exists, new_item = check
+        # Check if the proposed item name already exists
+        if exists is True:
+            # Flash message on failure
+            flash('Failed to edit item. Another item with the same name ' +
+                  'already exists. Please try another name.')
+            return redirect(url_for('new_item'))
+        # TODO(Manage product photo item_image)
+        cat = db_actions.category_by_name(category_name)
+        cat_id = cat.id
+        new = db_actions.create_new_item(item_name, item_description,
+                                         item_price, cat_id)
+        if new is True:
+            return redirect(url_for('item_page', category_name=category_name,
+                                    item_name=item_name))
+        else:
+            # Unknown failure reason
+            # Flash message on failure
+            flash('Failed to create new item.')
+            return redirect(url_for('new_item'))
+    return render_template('new_item.html',
+                           categories=categories,
+                           pagename=pagename)
+
+
+@app.route('/action/catalog/<string:category_name>/<string:item_name>/'
+           'edit_item/',
+           methods=['GET', 'POST'])
+def edit_item(category_name, item_name):
+    """Dialog for editing an item in the catalog."""
+    categories = db_actions.all_category_infomation()
+    # If the item is not in the category or the category does not exist
+    # Return 404.
+    exists, category, item = gen_actions.check_cat_item_exists(category_name,
+                                                               item_name)
+    if exists is False:
+        return gen_actions.return_404()
+    pagename = ("Update Item: " + item.name)
+    # Handle POST request for edit_item
+    if request.method == 'POST':
+        new_item_name = request.form['name']
+        item_description = request.form['description']
+        item_price = request.form['price']
+        new_category_name = request.form['category']
+        # TODO(Manage product photo item_image)
+        # Check if the proposed item name already exists
+        check = gen_actions.check_item_exists(new_item_name)
+        exists, new_item = check
+        if exists is True and new_item_name != item_name:
+            # Flash message on failure
+            flash('Failed to edit item. Another item with the same name ' +
+                  'already exists. Please try another name.')
+            return redirect(url_for('edit_item',
+                                    category_name=category_name,
+                                    item_name=item_name))
+        # Proposed item name does not exist, proceed
+        cat = db_actions.category_by_name(new_category_name)
+        cat_id = cat.id
+        new = db_actions.edit_item(item_name, new_item_name, item_description,
+                                   item_price, cat_id)
+        if new is True:
+            return redirect(url_for('item_page', category_name=category_name,
+                                    item_name=new_item_name))
+        else:
+            # Unknown failure reason
+            # Flash message on failure
+            flash('Failed to edit item.')
+            return redirect(url_for('edit_item',
+                                    category_name=category_name,
+                                    item_name=item_name))
+    return render_template('edit_item.html',
+                           categories=categories,
+                           category=category,
+                           item=item,
+                           pagename=pagename)
+
+
+@app.route('/action/catalog/<string:category_name>/<string:item_name>/'
+           'delete_item/',
+           methods=['GET', 'POST'])
+def delete_item():
+    """Dialog for deleteing an item from the catalog."""
+    # TODO(delete item view)
+    return gen_actions.return_404()
 
 # User Authentication
 
