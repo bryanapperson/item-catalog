@@ -5,6 +5,7 @@ from item_catalog import app
 from item_catalog import models
 import os
 
+
 # Category management
 
 
@@ -125,7 +126,8 @@ def create_new_item(item_name,
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
         new_item = models.CatalogItem(name=b(item_name),
-                                      description=b(item_description),
+                                      description=b(item_description,
+                                                    tags=['br']),
                                       price=b(item_price),
                                       image=b(item_image),
                                       category_id=b(item_category))
@@ -154,7 +156,8 @@ def edit_item(old_item_name,
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
         item.name = bleach.clean(new_item_name)
-        item.description = bleach.clean(item_description)
+        item.description = bleach.clean(item_description,
+                                        tags=['br'])
         item.price = bleach.clean(item_price)
         item.image = bleach.clean(item_image)
         item.category_id = bleach.clean(item_category)
