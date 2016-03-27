@@ -81,6 +81,7 @@ def new_category():
         new = db_actions.create_new_category(cat_name)
         # Did we successfully create the new category?
         if new is True:
+            flash('Category added to catalog.', category="success")
             return redirect(url_for('category_page', category_name=cat_name))
         else:
             # Failure reason is unknown
@@ -117,6 +118,7 @@ def edit_category(category_name):
         # Proposed category does not exist, proceed.
         new = db_actions.edit_category(category_info.name, cat_name)
         if new is True:
+            flash('Category entry edited.', category="success")
             return redirect(url_for('category_page', category_name=cat_name))
         else:
             # Failure reason unknown
@@ -198,6 +200,7 @@ def new_item():
         new = db_actions.create_new_item(item_name, item_description,
                                          item_price, cat_id)
         if new is True:
+            flash('New item added to catalog.', category="success")
             return redirect(url_for('item_page', category_name=category_name,
                                     item_name=item_name))
         else:
@@ -246,6 +249,7 @@ def edit_item(category_name, item_name):
         new = db_actions.edit_item(item_name, new_item_name, item_description,
                                    item_price, cat_id)
         if new is True:
+            flash('Item entry updated.', category="success")
             return redirect(url_for('item_page', category_name=category_name,
                                     item_name=new_item_name))
         else:
