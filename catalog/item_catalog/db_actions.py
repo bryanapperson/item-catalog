@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Database actions module."""
+import bleach
 from item_catalog import app
 from item_catalog import models
 import os
@@ -12,6 +13,7 @@ def all_category_infomation():
     category = models.Category
     categories = models.DB.session.query(category).order_by(category.name).all(
     )
+    models.DB.session.close()
     return categories
 
 
@@ -20,6 +22,7 @@ def category_by_name(cat_name):
     cat_db = models.Category
     category = models.DB.session.query(cat_db).filter(cat_db.name ==
                                                       cat_name).one()
+    models.DB.session.close()
     return category
 
 
@@ -34,9 +37,10 @@ def create_new_category(category_name):
     except Exception:
         pass
     try:
-        new_category = models.Category(name=category_name)
+        new_category = models.Category(name=bleach.clean(category_name))
         models.DB.session.add(new_category)
         models.DB.session.commit()
+        models.DB.session.close()
     except Exception:
         return False
     return True
@@ -49,8 +53,10 @@ def edit_category(category_old_name, category_new_name):
     """
     try:
         category = category_by_name(category_old_name)
-        category.name = category_new_name
+        category.name = bleach.clean(category_new_name)
+        models.DB.session.add(category)
         models.DB.session.commit()
+        models.DB.session.close()
     except Exception:
         return False
     return True
@@ -68,6 +74,7 @@ def delete_category(category_name):
             models.DB.session.delete(item)
         models.DB.session.delete(category)
         models.DB.session.commit()
+        models.DB.session.close()
     except Exception:
         return False
     return True
@@ -80,6 +87,7 @@ def all_items_in_category(category_id):
     item_db = models.CatalogItem
     items = models.DB.session.query(item_db).filter(item_db.category_id ==
                                                     category_id)
+    models.DB.session.close()
     return items
 
 
@@ -88,6 +96,7 @@ def item_by_name(item_name):
     item_db = models.CatalogItem
     item = models.DB.session.query(item_db).filter(item_db.name ==
                                                    item_name).one()
+    models.DB.session.close()
     return item
 
 
@@ -96,6 +105,7 @@ def recent_items(number=10):
     items = models.CatalogItem
     recent = models.DB.session.query(items).order_by(items.id.desc()).limit(
         number)
+    models.DB.session.close()
     return recent
 
 
@@ -109,17 +119,19 @@ def create_new_item(item_name,
     Returns True on success.
     """
     try:
+        b = bleach.clean
         item_image = None
         # TODO(Handle item image)
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
-        new_item = models.CatalogItem(name=item_name,
-                                      description=item_description,
-                                      price=item_price,
-                                      image=item_image,
-                                      category_id=item_category)
+        new_item = models.CatalogItem(name=b(item_name),
+                                      description=b(item_description),
+                                      price=b(item_price),
+                                      image=b(item_image),
+                                      category_id=b(item_category))
         models.DB.session.add(new_item)
         models.DB.session.commit()
+        models.DB.session.close()
     except Exception:
         return False
     return True
@@ -141,12 +153,14 @@ def edit_item(old_item_name,
         # TODO(Handle item image)
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
-        item.name = new_item_name
-        item.description = item_description
-        item.price = item_price
-        item.image = item_image
-        item.category_id = item_category
+        item.name = bleach.clean(new_item_name)
+        item.description = bleach.clean(item_description)
+        item.price = bleach.clean(item_price)
+        item.image = bleach.clean(item_image)
+        item.category_id = bleach.clean(item_category)
+        models.DB.session.add(item)
         models.DB.session.commit()
+        models.DB.session.close()
     except Exception:
         return False
     return True
@@ -162,6 +176,7 @@ def delete_item(item_name):
         item = item_by_name(item_name)
         models.DB.session.delete(item)
         models.DB.session.commit()
+        models.DB.session.close()
     except Exception:
         return False
     return True
@@ -184,6 +199,7 @@ def sample_categories():
         categoryobj = models.Category(name=category)
         models.DB.session.add(categoryobj)
         models.DB.session.commit()
+        models.DB.session.close()
 
 
 def sample_items():
@@ -209,6 +225,7 @@ def sample_items():
                                      image=item_image)
         models.DB.session.add(itemobj)
         models.DB.session.commit()
+        models.DB.session.close()
 
 
 def sample_data():
@@ -226,6 +243,7 @@ def sample_data():
 def create_db():
     """Create the initial database."""
     models.DB.create_all()
+    models.DB.session.close()
 
 
 def model_population():

@@ -117,7 +117,40 @@ def gconnect(request):
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: '
     output += '150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'
-    flash("you are now logged in as %s" % login_session['username'],
+    flash("You are now logged in as %s" % login_session['username'],
           category="success")
     # print (output)
     return output
+
+
+def gdisconnect():
+    """Handle google authorization disconnect."""
+    access_token = None
+    try:
+        auth = login_session['credentials']
+        access_token = auth.access_token
+    except Exception:
+        if access_token is None:
+            response = make_response(json.dumps('Current user not connected.'),
+                                     401)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+    base_url = 'https://accounts.google.com/o/oauth2/revoke?token='
+    url = base_url + auth.access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+    if result['status'] == '200':
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'),
+                                 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps('Failed to revoke token for ' +
+                                            'given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response

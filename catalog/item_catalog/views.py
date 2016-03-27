@@ -356,6 +356,13 @@ def gconnect():
     """Handle gconnect login."""
     return auth_manager.gconnect(request)
 
+
+@app.route('/gdisconnect')
+def gdisconnect():
+    """Handle gconnect login."""
+    return auth_manager.gdisconnect()
+
+
 # JSON API
 
 
