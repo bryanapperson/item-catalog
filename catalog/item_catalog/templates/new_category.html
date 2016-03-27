@@ -39,6 +39,19 @@
                 <div class="row">
                     <div class="9 columns">
                         <h2 class="text-center">{{pagename}}</h2>
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert callout" data-closable>
+                            <h5>Error</h5>
+                            <p>{{ message }}</p>
+                            <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
                     </div>
                 </div>
                 <div class="row">
@@ -57,7 +70,7 @@
         <p class="text-center">Item Catalog Web Application</p>
     </footer>
     <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.js') }}"></script>
     <script>
     $(document).foundation();
     </script>

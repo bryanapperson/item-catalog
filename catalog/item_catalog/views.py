@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Views for the item_catalog application."""
 
+from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -64,11 +65,27 @@ def new_category():
     """Dialog for adding a new category to the catalog."""
     categories = db_actions.all_category_infomation()
     pagename = "Create A New Category"
+    # Handle POST for new_category
     if request.method == 'POST':
         cat_name = request.form['name']
+        # Check if the proposed category exists
+        check = gen_actions.check_category_exists(cat_name)
+        exists, cat = check
+        if exists is True:
+            # This category already exists
+            flash('Failed to create new category. ' +
+                  'This category name already exists. ' +
+                  'Try a different name.')
+            return redirect(url_for('new_category'))
+        # Proposed category does not exist, proceed.
         new = db_actions.create_new_category(cat_name)
+        # Did we successfully create the new category?
         if new is True:
             return redirect(url_for('category_page', category_name=cat_name))
+        else:
+            # Failure reason is unknown
+            flash('Failed to create new category.')
+            return redirect(url_for('new_category'))
     return render_template('new_category.html',
                            categories=categories,
                            pagename=pagename)
@@ -83,11 +100,28 @@ def edit_category(category_name):
     if exists is False:
         return gen_actions.return_404()
     pagename = ("Update Category: " + category_info.name)
+    # Handle POST for edit_category
     if request.method == 'POST':
         cat_name = request.form['name']
+        # Check if the proposed category exists
+        check = gen_actions.check_category_exists(cat_name)
+        exists, cat = check
+        if exists is True and category_name != cat_name:
+            # This category already exists
+            flash('Failed to edit category. ' +
+                  'The proposed category name already exists. ' +
+                  'Try a different name.')
+            return redirect(url_for('edit_category',
+                                    category_name=category_name))
+        # Proposed category does not exist, proceed.
         new = db_actions.edit_category(category_info.name, cat_name)
         if new is True:
             return redirect(url_for('category_page', category_name=cat_name))
+        else:
+            # Failure reason unknown
+            flash('Failed to edit category.')
+            return redirect(url_for('edit_category',
+                                    category_name=category_name))
     return render_template('edit_category.html',
                            pagename=pagename,
                            categories=categories,
@@ -124,6 +158,9 @@ def new_item():
         if new is True:
             return redirect(url_for('item_page', category_name=category_name,
                                     item_name=item_name))
+        else:
+            # Flash message on failure
+            flash('Failed to create new item.')
     return render_template('new_item.html',
                            categories=categories,
                            pagename=pagename)
@@ -157,6 +194,9 @@ def edit_item(category_name, item_name):
         if new is True:
             return redirect(url_for('item_page', category_name=category_name,
                                     item_name=new_item_name))
+        else:
+            # Flash message on failure
+            flash('Failed to edit item.')
     return render_template('edit_item.html',
                            categories=categories,
                            category=category,

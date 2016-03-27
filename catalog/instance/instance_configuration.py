@@ -7,3 +7,4 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False  # Extra overhead
 SQLALCHEMY_DATABASE_URI = 'sqlite:///item_catalog.db'  # Database location
 UPLOADED_PHOTOS_DEST = 'uploads/'  # Uploaded photos storage
 UPLOADED_PHOTOS_URL = 'photos/'  # Uploaded photos serving URL
+SECRET_KEY = 'eb430c23-b1eb-4000-a1dd-2219869316b0'  # Production secret key
