@@ -192,11 +192,12 @@ def sample_metadata():
 def sample_categories():
     """Sample category data."""
     # List of category names
+    b = bleach.clean
     category_list = ['Soccer', 'Basketball', 'Baseball', 'Frisbee',
                      'Snowboarding', 'Rock Climbing', 'Foosball', 'Skating',
                      'Hockey']
     for category in category_list:
-        categoryobj = models.Category(name=category)
+        categoryobj = models.Category(name=b(category))
         models.DB.session.add(categoryobj)
         models.DB.session.commit()
         models.DB.session.close()
@@ -205,6 +206,7 @@ def sample_categories():
 def sample_items():
     """Sample item data."""
     # Information for items
+    b = bleach.clean
     item_image = '/static/img/default/placeholder.png'
     price_list = ['18.99', '21.99', '6.99', '12.99', '499.99', '69.99',
                   '999.99', '199.99', '69.99', '129.99', '139.99', '9.99']
@@ -218,11 +220,11 @@ def sample_items():
     # Let's be pythonic about populating items
     for price, category, name, desc in zip(price_list, item_category_list,
                                            item_name_list, desc_list):
-        itemobj = models.CatalogItem(name=name,
-                                     category_id=category,
-                                     price=float(price),
-                                     description=desc,
-                                     image=item_image)
+        itemobj = models.CatalogItem(name=b(name),
+                                     category_id=b(category),
+                                     price=b(float(price)),
+                                     description=b(desc),
+                                     image=b(item_image))
         models.DB.session.add(itemobj)
         models.DB.session.commit()
         models.DB.session.close()
