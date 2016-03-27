@@ -75,7 +75,8 @@ def new_category():
             # This category already exists
             flash('Failed to create new category. ' +
                   'This category name already exists. ' +
-                  'Try a different name.', category='alert')
+                  'Try a different name.',
+                  category='alert')
             return redirect(url_for('new_category'))
         # Proposed category does not exist, proceed.
         new = db_actions.create_new_category(cat_name)
@@ -112,7 +113,8 @@ def edit_category(category_name):
             # This category already exists
             flash('Failed to edit category. ' +
                   'The proposed category name already exists. ' +
-                  'Try a different name.', category='alert')
+                  'Try a different name.',
+                  category='alert')
             return redirect(url_for('edit_category',
                                     category_name=category_name))
         # Proposed category does not exist, proceed.
@@ -173,8 +175,7 @@ def item_page(category_name, item_name):
                            pagename=page)
 
 
-@app.route('/action/catalog/new_item/',
-           methods=['GET', 'POST'])
+@app.route('/action/catalog/new_item/', methods=['GET', 'POST'])
 def new_item():
     """Dialog for adding a new item to a given <category_name>."""
     categories = db_actions.all_category_infomation()
@@ -192,7 +193,8 @@ def new_item():
         if exists is True:
             # Flash message on failure
             flash('Failed to edit item. Another item with the same name ' +
-                  'already exists. Please try another name.', category='alert')
+                  'already exists. Please try another name.',
+                  category='alert')
             return redirect(url_for('new_item'))
         # Proposed item does not exist, proceed.
         cat = db_actions.category_by_name(category_name)
@@ -201,7 +203,8 @@ def new_item():
                                          item_price, cat_id)
         if new is True:
             flash('New item added to catalog.', category="success")
-            return redirect(url_for('item_page', category_name=category_name,
+            return redirect(url_for('item_page',
+                                    category_name=category_name,
                                     item_name=item_name))
         else:
             # Unknown failure reason
@@ -239,7 +242,8 @@ def edit_item(category_name, item_name):
         if exists is True and new_item_name != item_name:
             # Flash message on failure
             flash('Failed to edit item. Another item with the same name ' +
-                  'already exists. Please try another name.', category='alert')
+                  'already exists. Please try another name.',
+                  category='alert')
             return redirect(url_for('edit_item',
                                     category_name=category_name,
                                     item_name=item_name))
@@ -250,7 +254,8 @@ def edit_item(category_name, item_name):
                                    item_price, cat_id)
         if new is True:
             flash('Item entry updated.', category="success")
-            return redirect(url_for('item_page', category_name=category_name,
+            return redirect(url_for('item_page',
+                                    category_name=category_name,
                                     item_name=new_item_name))
         else:
             # Unknown failure reason
@@ -271,7 +276,6 @@ def edit_item(category_name, item_name):
            methods=['GET', 'POST'])
 def delete_item(category_name, item_name):
     """Dialog for deleteing an item from the catalog."""
-    # TODO(delete item view)
     categories = db_actions.all_category_infomation()
     # If the item is not in the category or the category does not exist
     # Return 404.
@@ -283,6 +287,7 @@ def delete_item(category_name, item_name):
     # Handle POST request for delete_item
     if request.method == 'POST':
         # Handle deletion
+        # TODO(Handle item image deletion)
         if request.form['delete'] == 'Delete Item':
             if db_actions.delete_item(item_name) is True:
                 flash('Item deleted from catalog.', category="success")
@@ -353,16 +358,13 @@ def recent_atom():
     # TODO(ATOM API/feed for recent items)
     return gen_actions.return_404()
 
-
 # Static asset serving
 
 
 @app.route('/photos/<filename>')
 def uploaded_photo(filename):
     """Server uploaded photos."""
-    return send_from_directory(app.config['UPLOADED_PHOTOS_URL'],
-                               filename)
-
+    return send_from_directory(app.config['UPLOADED_PHOTOS_URL'], filename)
 
 # General error handling
 

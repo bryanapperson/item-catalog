@@ -64,7 +64,6 @@ def delete_category(category_name):
     # TODO(Delete category db_action)
     pass
 
-
 # Item management
 
 
@@ -92,8 +91,11 @@ def recent_items(number=10):
     return recent
 
 
-def create_new_item(item_name, item_description, item_price,
-                    item_category, item_image=None):
+def create_new_item(item_name,
+                    item_description,
+                    item_price,
+                    item_category,
+                    item_image=None):
     """Create a new item <item_name>.
 
     Returns True on success.
@@ -115,8 +117,12 @@ def create_new_item(item_name, item_description, item_price,
     return True
 
 
-def edit_item(old_item_name, new_item_name, item_description, item_price,
-              item_category, item_image=None):
+def edit_item(old_item_name,
+              new_item_name,
+              item_description,
+              item_price,
+              item_category,
+              item_image=None):
     """Edit <item_name>.
 
     Returns True on success.
@@ -143,6 +149,7 @@ def delete_item(item_name):
 
     Returns True on success.
     """
+    # TODO(Handle item image)
     try:
         item = item_by_name(item_name)
         models.DB.session.delete(item)
