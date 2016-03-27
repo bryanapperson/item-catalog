@@ -75,7 +75,7 @@ def new_category():
             # This category already exists
             flash('Failed to create new category. ' +
                   'This category name already exists. ' +
-                  'Try a different name.')
+                  'Try a different name.', category='alert')
             return redirect(url_for('new_category'))
         # Proposed category does not exist, proceed.
         new = db_actions.create_new_category(cat_name)
@@ -84,7 +84,7 @@ def new_category():
             return redirect(url_for('category_page', category_name=cat_name))
         else:
             # Failure reason is unknown
-            flash('Failed to create new category.')
+            flash('Failed to create new category.', category='alert')
             return redirect(url_for('new_category'))
     return render_template('new_category.html',
                            categories=categories,
@@ -111,7 +111,7 @@ def edit_category(category_name):
             # This category already exists
             flash('Failed to edit category. ' +
                   'The proposed category name already exists. ' +
-                  'Try a different name.')
+                  'Try a different name.', category='alert')
             return redirect(url_for('edit_category',
                                     category_name=category_name))
         # Proposed category does not exist, proceed.
@@ -120,7 +120,7 @@ def edit_category(category_name):
             return redirect(url_for('category_page', category_name=cat_name))
         else:
             # Failure reason unknown
-            flash('Failed to edit category.')
+            flash('Failed to edit category.', category='alert')
             return redirect(url_for('edit_category',
                                     category_name=category_name))
     return render_template('edit_category.html',
@@ -190,7 +190,7 @@ def new_item():
         if exists is True:
             # Flash message on failure
             flash('Failed to edit item. Another item with the same name ' +
-                  'already exists. Please try another name.')
+                  'already exists. Please try another name.', category='alert')
             return redirect(url_for('new_item'))
         # Proposed item does not exist, proceed.
         cat = db_actions.category_by_name(category_name)
@@ -203,7 +203,7 @@ def new_item():
         else:
             # Unknown failure reason
             # Flash message on failure
-            flash('Failed to create new item.')
+            flash('Failed to create new item.', category='alert')
             return redirect(url_for('new_item'))
     return render_template('new_item.html',
                            categories=categories,
@@ -236,7 +236,7 @@ def edit_item(category_name, item_name):
         if exists is True and new_item_name != item_name:
             # Flash message on failure
             flash('Failed to edit item. Another item with the same name ' +
-                  'already exists. Please try another name.')
+                  'already exists. Please try another name.', category='alert')
             return redirect(url_for('edit_item',
                                     category_name=category_name,
                                     item_name=item_name))
@@ -251,7 +251,7 @@ def edit_item(category_name, item_name):
         else:
             # Unknown failure reason
             # Flash message on failure
-            flash('Failed to edit item.')
+            flash('Failed to edit item.', category='alert')
             return redirect(url_for('edit_item',
                                     category_name=category_name,
                                     item_name=item_name))
