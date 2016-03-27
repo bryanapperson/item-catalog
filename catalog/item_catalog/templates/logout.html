@@ -1,0 +1,100 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Item Catalog | {{pagename}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <ul class="menu">
+                    <li class="menu-text" ><a href="{{ url_for('index_page') }}">Item Catalog</a></li>
+                </ul>
+            </div>
+            <div class="top-bar-right">
+                <ul class="menu">
+                    <li class="menu-text"><a href="{{ url_for('new_category') }}">New Category</a></li>
+                    {% if category_info %}
+                    <li class="menu-text"><a href="{{ url_for('edit_category', category_name=category_info.name) }}">Edit Category</a></li>
+                    <li class="menu-text"><a href="{{ url_for('delete_category', category_name=category_info.name)}}">Delete Category</a></li>
+                    {% endif %}
+                    <li class="menu-text"><a href="{{ url_for('new_item') }}">New Item</a></li>
+                    {% if category_info %}
+                    {% if page_item %}
+                    <li class="menu-text"><a href="{{ url_for('edit_item', category_name=category_info.name, item_name=page_item.name) }}">Edit Item</a></li>
+                    <li class="menu-text"><a href="{{ url_for('delete_item', category_name=category_info.name, item_name=page_item.name)}}">Delete Item</a></li>
+                    {% endif %}
+                    {% endif %}
+                    <li class="menu-text"><a href="{{ url_for('login_register') }}">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <content>
+        <div class="row" id="content">
+            <div class="medium-3 columns" data-sticky-container>
+                <div class="sticky" data-sticky data-anchor="content">
+                    <h4>Categories</h4>
+                    <ul>
+                        {% for category in categories %}
+                        <li><a href="{{ url_for('category_page', category_name=category.name) }}">{{category.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="medium-9 columns">
+                <div class="row">
+                    <div class="9 columns">
+                        <h2 class="text-center">{{pagename}}</h2>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="{{category}} callout" data-closable>
+                                {% if category == 'success'%}
+                                <h5>Success</h5>
+                                {% endif %}
+                                {% if category == 'alert'%}
+                                <h5>Alert</h5>
+                                {% endif %}
+                                {% if category == 'primary'%}
+                                <h5>Notice</h5>
+                                {% endif %}
+                                <p>{{ message }}</p>
+                                <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="12 columns">
+                        <p class="text-center">To logout, click the logout button below.</p>
+                        <form action="{{ url_for('logout')}}" method="post">
+                            <div class="row">
+                                <div class="12 columns">
+                                    <div class="text-center">
+                                        <input type="submit" name="logout" value="Logout" class="success button">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </content>
+    <footer>
+        <p class="text-center">Item Catalog Web Application</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

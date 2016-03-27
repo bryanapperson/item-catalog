@@ -23,11 +23,6 @@ class CatalogMeta(DB.Model):
     propertyName = DB.Column(DB.String(80), unique=True)
     value = DB.Column(DB.String(120))
 
-    def __init__(self, propertyName, value):
-        """Constructor function for CatalogMeta object."""
-        self.propertyName = propertyName
-        self.value = value
-
     def __repr__(self):
         """Information about this object instance."""
         return '<propertyName %r>, <value %r>' % self.propertyName, self.value
@@ -37,13 +32,9 @@ class User(DB.Model):
     """Class to represent web application user."""
     __tablename__ = 'users'
     id = DB.Column(DB.Integer, primary_key=True)
-    username = DB.Column(DB.String(80), unique=True)
-    email = DB.Column(DB.String(120), unique=True)
-
-    def __init__(self, username, email):
-        """Constructor function for User."""
-        self.username = username
-        self.email = email
+    name = DB.Column(DB.String(200))
+    email = DB.Column(DB.String(255), unique=True, nullable=False)
+    picture = DB.Column(DB.String(4096))
 
     def __repr__(self):
         """Information about this class."""
@@ -56,6 +47,8 @@ class Category(DB.Model):
     # Table mapping
     name = DB.Column(DB.String(80), unique=True, nullable=False)
     id = DB.Column(DB.Integer, primary_key=True)
+    user_id = DB.Column(DB.Integer, DB.ForeignKey('users.id'))
+    user = DB.relationship(User)
 
 
 class CatalogItem(DB.Model):
@@ -69,3 +62,5 @@ class CatalogItem(DB.Model):
     image = DB.Column(DB.String(2000))
     category_id = DB.Column(DB.Integer, DB.ForeignKey('categories.id'))
     category = DB.relationship(Category)
+    user_id = DB.Column(DB.Integer, DB.ForeignKey('users.id'))
+    user = DB.relationship(User)

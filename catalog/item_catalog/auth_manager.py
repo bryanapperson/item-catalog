@@ -7,6 +7,7 @@ from flask import make_response
 from flask import session as login_session
 import httplib2
 from item_catalog import app
+from item_catalog import db_actions
 from item_catalog import gen_actions
 import json
 from oauth2client.client import flow_from_clientsecrets
@@ -26,6 +27,26 @@ def set_login_state():
     """Set a login session state."""
     login_session['state'] = generate_session_id()
     return login_session['state']
+
+
+def is_auth():
+    """Return false if user is not authorized/logged in."""
+    if 'username' not in login_session:
+        return False
+    return True
+
+
+def get_session_user_id():
+    """Return session <user_id>."""
+    user_id = login_session['user_id']
+    return user_id
+
+
+def logout_action(url):
+    """Get logout action result."""
+    h = httplib2.Http()
+    result = h.request(url, 'GET')
+    return result
 
 
 def gconnect(request):
@@ -119,7 +140,15 @@ def gconnect(request):
     output += '150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'
     flash("You are now logged in as %s" % login_session['username'],
           category="success")
-    # print (output)
+    print (login_session)
+    # Check if the user exists in the DB by email
+    check_user = db_actions.get_user_id(login_session['email'])
+    # If not create user and set user id, else set user id in login_session
+    if not isinstance(check_user, str):
+        login_session['user_id'] = db_actions.create_user(login_session)
+    else:
+        login_session['user_id'] = check_user
+    print (login_session)
     return output
 
 

@@ -27,7 +27,7 @@ def category_by_name(cat_name):
     return category
 
 
-def create_new_category(category_name):
+def create_new_category(category_name, user_id):
     """Create a new category <category_name>.
 
     Returns True on success.
@@ -38,12 +38,14 @@ def create_new_category(category_name):
     except Exception:
         pass
     try:
-        new_category = models.Category(name=bleach.clean(category_name))
+        new_category = models.Category(name=bleach.clean(category_name),
+                                       user_id=user_id)
         models.DB.session.add(new_category)
         models.DB.session.commit()
-        models.DB.session.close()
     except Exception:
         return False
+    finally:
+        models.DB.session.close()
     return True
 
 
@@ -57,9 +59,10 @@ def edit_category(category_old_name, category_new_name):
         category.name = bleach.clean(category_new_name)
         models.DB.session.add(category)
         models.DB.session.commit()
-        models.DB.session.close()
     except Exception:
         return False
+    finally:
+        models.DB.session.close()
     return True
 
 
@@ -75,9 +78,10 @@ def delete_category(category_name):
             models.DB.session.delete(item)
         models.DB.session.delete(category)
         models.DB.session.commit()
-        models.DB.session.close()
     except Exception:
         return False
+    finally:
+        models.DB.session.close()
     return True
 
 # Item management
@@ -114,6 +118,7 @@ def create_new_item(item_name,
                     item_description,
                     item_price,
                     item_category,
+                    user_id,
                     item_image=None):
     """Create a new item <item_name>.
 
@@ -130,12 +135,14 @@ def create_new_item(item_name,
                                                     tags=['br']),
                                       price=b(item_price),
                                       image=b(item_image),
-                                      category_id=b(item_category))
+                                      category_id=b(item_category),
+                                      user_id=user_id)
         models.DB.session.add(new_item)
         models.DB.session.commit()
-        models.DB.session.close()
     except Exception:
         return False
+    finally:
+        models.DB.session.close()
     return True
 
 
@@ -163,9 +170,10 @@ def edit_item(old_item_name,
         item.category_id = bleach.clean(item_category)
         models.DB.session.add(item)
         models.DB.session.commit()
-        models.DB.session.close()
     except Exception:
         return False
+    finally:
+        models.DB.session.close()
     return True
 
 
@@ -179,10 +187,56 @@ def delete_item(item_name):
         item = item_by_name(item_name)
         models.DB.session.delete(item)
         models.DB.session.commit()
-        models.DB.session.close()
     except Exception:
         return False
+    finally:
+        models.DB.session.close()
     return True
+
+
+# Begin user management section
+
+
+def create_user(login_session):
+    """Create a new user in the database."""
+    try:
+        new_user = models.User(name=login_session['username'],
+                               email=login_session['email'],
+                               picture=login_session['picture'])
+        models.DB.session.add(new_user)
+        models.DB.session.commit()
+        user = models.DB.session.query(models.User
+                                       ).filter_by(email=login_session['email']
+                                                   ).one()
+    except Exception:
+        return None
+    finally:
+        models.DB.session.close()
+    return user.id
+
+
+def get_user_info(user_id):
+    """Get info for <user_id> from the database."""
+    try:
+        user = models.DB.session.query(models.User).filter_by(id=user_id).one()
+    except Exception:
+        return None
+    finally:
+        models.DB.session.close()
+    return user
+
+
+def get_user_id(email):
+    """Get <user.id> for <email> from the database."""
+    try:
+        user = models.DB.session.query(models.User).filter_by(email=email
+                                                              ).one()
+        return user.id
+    except Exception:
+        return None
+    finally:
+        models.DB.session.close()
+
 
 # Begin sample data section
 
@@ -192,7 +246,22 @@ def sample_metadata():
     pass
 
 
-def sample_categories():
+def sample_user():
+    """Populate metadata table with sample rows."""
+    session_sim = {}
+    session_sim['username'] = 'admin'
+    session_sim['email'] = 'admin@localhost'
+    session_sim['picture'] = '/static/img/default/placeholder.png'
+    # Check if the user exists in the DB by email
+    check_user = get_user_id(session_sim['email'])
+    # If not create user and set user id, else set user id in login_session
+    if not isinstance(check_user, str):
+        return create_user(session_sim)
+    else:
+        return check_user
+
+
+def sample_categories(user_id):
     """Sample category data."""
     # List of category names
     b = bleach.clean
@@ -200,13 +269,14 @@ def sample_categories():
                      'Snowboarding', 'Rock Climbing', 'Foosball', 'Skating',
                      'Hockey']
     for category in category_list:
-        categoryobj = models.Category(name=b(category))
+        categoryobj = models.Category(name=b(category),
+                                      user_id=user_id)
         models.DB.session.add(categoryobj)
         models.DB.session.commit()
         models.DB.session.close()
 
 
-def sample_items():
+def sample_items(user_id):
     """Sample item data."""
     # Information for items
     b = bleach.clean
@@ -227,7 +297,8 @@ def sample_items():
                                      category_id=b(category),
                                      price=b(float(price)),
                                      description=b(desc),
-                                     image=b(item_image))
+                                     image=b(item_image),
+                                     user_id=user_id)
         models.DB.session.add(itemobj)
         models.DB.session.commit()
         models.DB.session.close()
@@ -235,12 +306,13 @@ def sample_items():
 
 def sample_data():
     """Sample data for initial database population."""
+    user_id = sample_user()
     # Populate metadata
     sample_metadata()
     # Populate categories
-    sample_categories()
+    sample_categories(user_id)
     # Populate items
-    sample_items()
+    sample_items(user_id)
 
 # End sample data section
 
