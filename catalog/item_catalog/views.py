@@ -428,14 +428,14 @@ def login_register():
                            state=urllib.quote(state.encode("utf-8")))
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     """Dialog for logging out."""
     # TODO(log out sucessfully view)
     # Redirect if not logged in
     if auth_manager.is_auth() is False:
         flash('You are not logged in.', category="primary")
-        return redirect(url_for('login'))
+        return redirect(url_for('login_register'))
     pagename = "Logout"
     state = auth_manager.set_login_state()
     categories = db_actions.all_category_infomation()
@@ -443,7 +443,7 @@ def logout():
         # Handle deletion
         # TODO(Handle item image deletion)
         if request.form['logout'] == 'Logout':
-            result = auth_manager.logout_action(url_for('gdisconnect'))
+            result = auth_manager.logout_action()
             flash(result, category="primary")
             return redirect(url_for('index_page'))
     return render_template('logout.html',
