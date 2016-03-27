@@ -61,8 +61,16 @@ def delete_category(category_name):
 
     Returns True on success.
     """
-    # TODO(Delete category db_action)
-    pass
+    try:
+        category = category_by_name(category_name)
+        all_items = all_items_in_category(category.id).all()
+        for item in all_items:
+            models.DB.session.delete(item)
+        models.DB.session.delete(category)
+        models.DB.session.commit()
+    except Exception:
+        return False
+    return True
 
 # Item management
 

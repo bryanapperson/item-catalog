@@ -16,6 +16,10 @@ Database models for ORM.
 
 Render web pages for UI/UX, route URLs.
 
+## auth_manager.py
+
+Authorization management for the item catalog application.
+
 ## static/
 
 Contains static assets such as CSS, JS, images.

@@ -2,6 +2,7 @@
 """General actions for the item_catalog application."""
 from flask import render_template
 from item_catalog import db_actions
+import json
 
 
 def check_category_exists(category_name):
@@ -36,6 +37,13 @@ def check_cat_item_exists(category_name, item_name):
         return False, category, None
     if item.category_id == category.id:
         return True, category, item
+
+
+def read_json(filename):
+    """Read json file and return contents in a string."""
+    with open(filename, 'r') as json_file:
+        json_read = json.loads(json_file.read())
+    return json_read
 
 
 def return_404():

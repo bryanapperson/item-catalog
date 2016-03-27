@@ -75,7 +75,7 @@
                 </div>
                 <div class="row">
                     <div class="12 columns">
-                        <p class="text-center">To confirm deletion click Delete Category below.
+                        <p class="text-center">To confirm deletion click Delete Item below.
                                                Otherwise, click <a href="{{ url_for('item_page', category_name=category.name, item_name=page_item.name)}}">here</a>
                                                to navigate away from this page, or click cancel below.</p>
                         <form action="{{ url_for('delete_item', category_name=category.name, item_name=page_item.name)}}" method="post">

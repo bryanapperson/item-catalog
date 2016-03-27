@@ -23,6 +23,7 @@ patch_request_class(app)
 # Relative, circular imports needed after object creation due
 # to Flask application structure.
 
+from item_catalog import auth_manager
 from item_catalog import db_actions
 from item_catalog import gen_actions
 from item_catalog import models

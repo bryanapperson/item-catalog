@@ -8,8 +8,10 @@ from flask import request
 from flask import send_from_directory
 from flask import url_for
 from item_catalog import app
+from item_catalog import auth_manager
 from item_catalog import db_actions
 from item_catalog import gen_actions
+import urllib
 
 # Home/Catalog main page
 
@@ -137,7 +139,6 @@ def edit_category(category_name):
            methods=['GET', 'POST'])
 def delete_category(category_name):
     """Dialog for deleteing a category from the catalog."""
-    # TODO(delete category view)
     categories = db_actions.all_category_infomation()
     # Check if category exists otherwise return 404
     exists, category_info = gen_actions.check_category_exists(category_name)
@@ -145,13 +146,25 @@ def delete_category(category_name):
         return gen_actions.return_404()
     pagename = ("Delete Category: " + category_name)
     if request.method == 'POST':
-        pass
-    # On success return to index page
-    # return redirect(url_for('index_page'))
+        # Handle deletion
+        if request.form['delete'] == 'Delete Category and Items':
+            if db_actions.delete_category(category_name) is True:
+                flash('Category deleted from catalog.', category="success")
+                return redirect(url_for('index_page'))
+            else:
+                flash('Category deletion failed.', category="alert")
+                return redirect(url_for('category_page',
+                                        category_name=category_name))
+        # Handle canceled deletion
+        if request.form['delete'] == 'Cancel':
+            flash('Category deletion canceled.', category="primary")
+            return redirect(url_for('category_page',
+                                    category_name=category_name))
     return render_template('delete_category.html',
-                           pagename=pagename,
                            categories=categories,
-                           category=category_info)
+                           category=category_info,
+                           pagename=pagename)
+
 
 # Item management
 
@@ -180,6 +193,12 @@ def new_item():
     """Dialog for adding a new item to a given <category_name>."""
     categories = db_actions.all_category_infomation()
     pagename = "Create A New Item"
+    # If there are no categories?
+    if len(categories) == 0:
+        # Flash message on failure
+        flash('There are no categories, please create a category first.',
+              category='primary')
+        return redirect(url_for('new_category'))
     # Manage post request for new_item
     if request.method == 'POST':
         item_name = request.form['name']
@@ -317,7 +336,13 @@ def delete_item(category_name, item_name):
 def login_register():
     """Dialog for registering or logging in."""
     # TODO(login or register view)
-    return gen_actions.return_404()
+    pagename = "Login or Register"
+    state = auth_manager.set_login_state()
+    categories = db_actions.all_category_infomation()
+    return render_template('login.html',
+                           categories=categories,
+                           pagename=pagename,
+                           state=urllib.quote(state.encode("utf-8")))
 
 
 @app.route('/logout')
@@ -325,6 +350,12 @@ def logout():
     """Dialog for logging out."""
     # TODO(log out sucessfully view)
     return gen_actions.return_404()
+
+
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    """Handle gconnect login."""
+    return auth_manager.gconnect(request)
 
 # JSON API
 
@@ -363,6 +394,7 @@ def recent_atom():
 
 @app.route('/photos/<filename>')
 def uploaded_photo(filename):
+    # TODO(Test photo uploading and implement)
     """Server uploaded photos."""
     return send_from_directory(app.config['UPLOADED_PHOTOS_URL'], filename)
 
