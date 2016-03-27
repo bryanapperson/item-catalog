@@ -143,8 +143,13 @@ def delete_item(item_name):
 
     Returns True on success.
     """
-    # TODO(Delete item DB action.)
-    pass
+    try:
+        item = item_by_name(item_name)
+        models.DB.session.delete(item)
+        models.DB.session.commit()
+    except Exception:
+        return False
+    return True
 
 # Begin sample data section
 
