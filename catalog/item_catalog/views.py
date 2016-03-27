@@ -280,7 +280,15 @@ def delete_item(category_name, item_name):
     if request.method == 'POST':
         # Handle deletion
         if request.form['delete'] == 'Delete Item':
-            pass  # do something
+            if db_actions.delete_item(item_name) is True:
+                flash('Item deleted from catalog.', category="success")
+                return redirect(url_for('category_page',
+                                        category_name=category_name))
+            else:
+                flash('Item deletion failed.', category="alert")
+                return redirect(url_for('item_page',
+                                        category_name=category_name,
+                                        item_name=item_name))
         # Handle canceled deletion
         if request.form['delete'] == 'Cancel':
             flash('Item deletion canceled.', category="primary")
