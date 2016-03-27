@@ -29,6 +29,11 @@ def create_new_category(category_name):
     Returns True on success.
     """
     try:
+        category_by_name(category_name)
+        return False
+    except Exception:
+        pass
+    try:
         new_category = models.Category(name=category_name)
         models.DB.session.add(new_category)
         models.DB.session.commit()

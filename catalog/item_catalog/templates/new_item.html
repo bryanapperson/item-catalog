@@ -39,6 +39,12 @@
                 <div class="row">
                     <div class="9 columns">
                         <h2 class="text-center">{{pagename}}</h2>
+                        {% for message in messages %}
+                        <div data-alert class="alert-box alert radius">
+                            {{ message }}
+                            <a href="#" class="close">&times;</a>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="row">
