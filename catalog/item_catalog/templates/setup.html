@@ -83,22 +83,24 @@
                 </div>
                 <div class="row">
                     <div class="12 columns">
-                        <p>Login below.</p>
-                        <div class="row">
-                            <div class="6 columns">
-                                <div id="signinButton">
-                                    <span class="g-signin"
-                                     data-scope="openid email"
-                                     data-clientid="466246027865-kmlj1r4d4f1pe1j3u5uep2qe27au08u6.apps.googleusercontent.com"
-                                     data-redirecturi="postmessage"
-                                     data-accesstype="offline"
-                                     data-cookiepolicy="single_host_origin"
-                                     data-callback="signInCallback">
-                                    </span>
+                        <p class="text-left">To install the sample data click Load Sample Data below.
+                                             To skip sample data installation, click Skip Sample Data.
+                                             Once one of these buttons is pressed the catalog will be setup
+                                             and this page will be disabled.</p>
+                        <p  class="text-left">This first user logged in (that's you)
+                                              is added as an admin user who can edit/delete all categories
+                                              and items, created by any other user.
+                                              </p>
+                        <form action="{{ url_for('setup_page')}}" method="post">
+                            <div class="row">
+                                <div class="12 columns">
+                                    <div class="text-center">
+                                        <input type="submit" name="setup" value="Load Sample Data" class="success button">
+                                        <input type="submit" name="setup" value="Skip Sample Data" class="alert button">
+                                    </div>
                                 </div>
-                                <div id="result"></div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -109,39 +111,8 @@
     </footer>
     <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
-    <script src="//apis.google.com/js/client:platform.js?onload=start" async defer></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script>
-    function signInCallback(authResult) {
-        "use strict";
-        if (authResult['code']){
-            // Hide the sign-in button now that the user is authorized
-            $('#signinButton').attr('style', 'display: none');
-            // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
-            $.ajax({
-                type: 'POST',
-                url: '/gconnect?state={{state}}',
-                processData: false,
-                data: authResult['code'],
-                contentType: 'application/octet-stream; charset=utf-8',
-                success: function(result) {
-                    // Handle or verify the server response if necessary.
-                    if (result) {
-                        $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
-                        setTimeout(function() {
-                            window.location.href = "{{redirect_page}}";
-                        }, 4000);
-
-                    } else if (authResult['error']) {
-                        console.log('There was an error: ' + authResult['error']);
-                    } else {
-                        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-                    }
-                }
-
-            });
-        }
-    }
+    $(document).foundation();
     </script>
 </body>
 </html>

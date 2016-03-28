@@ -84,6 +84,20 @@ def delete_category(category_name):
         models.DB.session.close()
     return True
 
+
+def cat_item_count(category_name):
+    """Count the number of items in a category and return the value."""
+    item_db = models.CatalogItem
+    category = category_by_name(category_name)
+    category_id = category.id
+    i_count = models.DB.session.query(item_db).filter(item_db.category_id ==
+                                                      category_id).count()
+    models.DB.session.close()
+    if i_count is None:
+        i_count = 0
+    return i_count
+
+
 # Item management
 
 
@@ -202,7 +216,8 @@ def create_user(login_session):
     try:
         new_user = models.User(name=login_session['username'],
                                email=login_session['email'],
-                               picture=login_session['picture'])
+                               picture=login_session['picture'],
+                               is_admin=False)
         models.DB.session.add(new_user)
         models.DB.session.commit()
         user = models.DB.session.query(models.User
@@ -238,7 +253,83 @@ def get_user_id(email):
         models.DB.session.close()
 
 
-# Begin sample data section
+def count_users():
+    """Count the number of users return the value."""
+    users_db = models.User
+    u_count = models.DB.session.query(users_db).count()
+    models.DB.session.close()
+    if u_count is None:
+        u_count = 0
+    return u_count
+
+
+def user_to_admin(user_id):
+    """Transform user to admin."""
+    try:
+        ad = models.DB.session.query(models.User).filter_by(id=user_id).one()
+        ad.is_admin = True
+        models.DB.session.add(ad)
+        models.DB.session.commit()
+    except Exception:
+        return False
+    finally:
+        models.DB.session.close()
+    return True
+
+
+def create_admin(login_session):
+    """Create a new user in the database."""
+    try:
+        new_admin = models.User(name=login_session['username'],
+                                email=login_session['email'],
+                                picture=login_session['picture'],
+                                is_admin=True)
+        models.DB.session.add(new_admin)
+        models.DB.session.commit()
+        user = models.DB.session.query(models.User
+                                       ).filter_by(email=login_session['email']
+                                                   ).one()
+    except Exception:
+        return None
+    finally:
+        models.DB.session.close()
+    return user.id
+
+
+# Begin setup data section
+
+
+def is_setup():
+    """Check if the catalog is setup. Return True if so."""
+    try:
+        s = models.DB.session.query(models.CatalogSettings
+                                    ).filter_by(propertyName='setup').one()
+    except Exception:
+        return False
+    finally:
+        models.DB.session.close()
+    return s.value
+
+
+def disable_setup():
+    """Disable catalog is setup. Return True if so."""
+    try:
+        s = models.DB.session.query(models.CatalogSettings
+                                    ).filter_by(propertyName='setup').one()
+        s.value = True
+        models.DB.session.add(s)
+        models.DB.session.commit()
+        s_val = s.value
+    except Exception:
+        setup = models.CatalogSettings(propertyName='setup',
+                                       value=True)
+        models.DB.session.add(setup)
+        models.DB.session.commit()
+        s_val = setup.value
+        return s_val
+    finally:
+        models.DB.session.close()
+    return s_val
 
 
 def sample_metadata():
@@ -304,9 +395,8 @@ def sample_items(user_id):
         models.DB.session.close()
 
 
-def sample_data():
+def sample_data(user_id):
     """Sample data for initial database population."""
-    user_id = sample_user()
     # Populate metadata
     sample_metadata()
     # Populate categories
@@ -320,7 +410,6 @@ def sample_data():
 def create_db():
     """Create the initial database."""
     models.DB.create_all()
-    models.DB.session.close()
 
 
 def model_population():
@@ -333,9 +422,6 @@ def model_population():
             print("Creating DB.")
             create_db()
             print("DB Created.")
-            print("Populating sample data.")
-            sample_data()
-            print("Populated sample data.")
 
 # Call DB population check
 model_population()

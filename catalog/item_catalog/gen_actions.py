@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """General actions for the item_catalog application."""
 from flask import render_template
+from flask import session as login_session
 from item_catalog import db_actions
 import json
 
@@ -46,10 +47,18 @@ def read_json(filename):
     return json_read
 
 
+def is_auth():
+    """Return false if user is not authorized/logged in."""
+    if 'username' not in login_session:
+        return False
+    return True
+
+
 def return_404():
     """Generate 404 error page."""
     page = 'Oops... Error 404'
     categories = db_actions.all_category_infomation()
     return render_template('error.html',
                            categories=categories,
-                           pagename=page), 404
+                           pagename=page,
+                           logged_in=is_auth()), 404

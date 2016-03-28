@@ -38,6 +38,49 @@ def admin_page():
     # TODO(Catalog admin view)
     return gen_actions.return_404()
 
+
+@app.route('/action/setup', methods=['GET', 'POST'])
+def setup_page():
+    """View for initial catalog setup."""
+    print db_actions.is_setup()
+    if db_actions.is_setup() is False:
+        # Make sure the one user is logged in
+        if not auth_manager.is_auth():
+            flash('You must login to access this page.', category="primary")
+            return redirect(url_for('login_register'))
+        user_id = auth_manager.get_session_user_id()
+        # Handle POST request
+        if request.method == 'POST':
+            # Handle sample data
+            if request.form['setup'] == 'Load Sample Data':
+                # Make sure this user becomes admin
+                db_actions.user_to_admin(user_id)
+                # Load sample data
+                db_actions.sample_data(user_id)
+                # Disable setup page
+                db_actions.disable_setup()
+                flash('Setup and sample data install complete.',
+                      category="primary")
+                return redirect(url_for('index_page'))
+            # Handle skip sample data
+            if request.form['setup'] == 'Skip Sample Data':
+                # Make sure this user becomes admin
+                db_actions.user_to_admin(user_id)
+                # Disable setup page
+                db_actions.disable_setup()
+                flash('Setup complete.', category="primary")
+                return redirect(url_for('index_page'))
+        # Handle GET request
+        else:
+            categories = db_actions.all_category_infomation()
+            pagename = "Item Catalog Setup"
+            return render_template('setup.html',
+                                   categories=categories,
+                                   pagename=pagename,
+                                   logged_in=auth_manager.is_auth())
+    else:
+        return gen_actions.return_404()
+
 # Category management
 
 
@@ -49,11 +92,13 @@ def category_page(category_name):
     if not exists:
         return gen_actions.return_404()
     # Setup initial values
-    num_items = 0
+    i_str = ' items)'
+    num_items = db_actions.cat_item_count(category_name)
+    if num_items == 1:
+        i_str = ' item)'
     categories = db_actions.all_category_infomation()
     # Found category, build variables for template
-    # TODO(Correctly count number of items)
-    page = 'Category: ' + category_name + ' (' + str(num_items) + ' items)'
+    page = 'Category: ' + category_name + ' (' + str(num_items) + i_str
     items = db_actions.all_items_in_category(category_info.id)
     # Return page
     return render_template('index.html',
@@ -438,10 +483,16 @@ def login_register():
     pagename = "Login or Register"
     state = auth_manager.set_login_state()
     categories = db_actions.all_category_infomation()
+    # Redirect to setup page if setup is not complete
+    if db_actions.is_setup() is False:
+        redirect_page = url_for('setup_page')
+    else:
+        redirect_page = url_for('index_page')
     return render_template('login.html',
                            categories=categories,
                            pagename=pagename,
                            state=urllib.quote(state.encode("utf-8")),
+                           redirect_page=redirect_page,
                            logged_in=auth_manager.is_auth())
 
 
