@@ -70,6 +70,11 @@ class Category(DB.Model):
     user_id = DB.Column(DB.Integer, DB.ForeignKey('users.id'))
     user = DB.relationship(User)
 
+    @property
+    def serialize(self):
+        """Return object data in an easily serializable format."""
+        return {'name': self.name, 'id': self.id, 'user_id': self.user_id}
+
 
 class CatalogItem(DB.Model):
     """An item in a category."""
@@ -84,3 +89,17 @@ class CatalogItem(DB.Model):
     category = DB.relationship(Category)
     user_id = DB.Column(DB.Integer, DB.ForeignKey('users.id'))
     user = DB.relationship(User)
+
+    @property
+    def serialize(self):
+        """Return object data in an easily serializable format."""
+        return {
+            'name': self.name,
+            'id': self.id,
+            'description': self.description,
+            'price': float(self.price),
+            'image': self.image,
+            'category_id': self.category_id,
+            'category_name': self.category.name,
+            'user_id': self.user_id
+        }

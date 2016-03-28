@@ -42,7 +42,6 @@ def admin_page():
 @app.route('/action/setup', methods=['GET', 'POST'])
 def setup_page():
     """View for initial catalog setup."""
-    print db_actions.is_setup()
     if db_actions.is_setup() is False:
         # Make sure the one user is logged in
         if not auth_manager.is_auth():
@@ -168,8 +167,7 @@ def edit_category(category_name):
     if not auth_manager.auth_category(category_info):
         flash('You are not authorized to edit this category.',
               category="alert")
-        return redirect(url_for('category_page',
-                        category_name=category_name))
+        return redirect(url_for('category_page', category_name=category_name))
     # Handle POST for edit_category
     if request.method == 'POST':
         cat_name = request.form['name']
@@ -225,8 +223,7 @@ def delete_category(category_name):
     if user_id != category_info.user_id:
         flash('You are not authorized to delete this category.',
               category="alert")
-        return redirect(url_for('category_page',
-                        category_name=category_name))
+        return redirect(url_for('category_page', category_name=category_name))
     # Handle POST request
     if request.method == 'POST':
         # Handle deletion
@@ -314,9 +311,12 @@ def new_item():
             flash('You are not authorized add items to this category.',
                   category="alert")
             return redirect(url_for('category_page',
-                            category_name=category_name))
-        new = db_actions.create_new_item(item_name, item_description,
-                                         item_price, cat_id, user_id=user_id)
+                                    category_name=category_name))
+        new = db_actions.create_new_item(item_name,
+                                         item_description,
+                                         item_price,
+                                         cat_id,
+                                         user_id=user_id)
         if new:
             flash('New item added to catalog.', category="success")
             return redirect(url_for('item_page',
@@ -362,8 +362,8 @@ def edit_item(category_name, item_name):
     if not auth_manager.auth_item(item):
         flash('You are not authorized to edit this item.', category="alert")
         return redirect(url_for('item_page',
-                        category_name=category_name,
-                        item_name=item_name))
+                                category_name=category_name,
+                                item_name=item_name))
     # Handle POST request for edit_item
     if request.method == 'POST':
         new_item_name = request.form['name']
@@ -433,8 +433,8 @@ def delete_item(category_name, item_name):
     if not auth_manager.auth_item(item):
         flash('You are not authorized to delete this item.', category="alert")
         return redirect(url_for('item_page',
-                        category_name=category_name,
-                        item_name=item_name))
+                                category_name=category_name,
+                                item_name=item_name))
     # Handle POST request for delete_item
     if request.method == 'POST':
         # Handle deletion
@@ -532,36 +532,38 @@ def gdisconnect():
     """Handle gconnect login."""
     return auth_manager.gdisconnect()
 
-
 # JSON API
 
 
 @app.route('/api/json/catalog/<string:category_name>/<string:item_name>/')
-def item_json():
+def item_json(category_name, item_name):
     """JSON API for single item."""
-    # TODO(single item JSON API)
-    return gen_actions.return_404()
+    # If the item is not in the category or the category does not exist
+    # Return 404.
+    exists, category, item = gen_actions.check_cat_item_exists(category_name,
+                                                               item_name)
+    return gen_actions.json_single(item, exists)
 
 
 @app.route('/api/json/catalog/<string:category_name>/')
-def category_json():
+def category_json(category_name):
     """JSON API for single category."""
-    # TODO(single category JSON API)
-    return gen_actions.return_404()
+    # Check if category exists otherwise return 404
+    exists, category_info = gen_actions.check_category_exists(category_name)
+    return gen_actions.json_single(category_info, exists)
 
 
 @app.route('/api/json/catalog/')
 def catalog_json():
     """JSON API for entire catalog."""
-    # TODO(entire catalog JSON API)
-    return gen_actions.return_404()
+    return gen_actions.json_catalog()
 
 # Atom feeds
 
 
-@app.route('/api/atom/catalog/recent')
+@app.route('/feed/atom/catalog/recent')
 def recent_atom():
-    """ATOM API/feed for recent items."""
+    """ATOM feed for recent items."""
     # TODO(ATOM API/feed for recent items)
     return gen_actions.return_404()
 

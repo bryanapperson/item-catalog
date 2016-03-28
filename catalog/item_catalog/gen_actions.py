@@ -1,9 +1,58 @@
 #!/usr/bin/env python
 """General actions for the item_catalog application."""
+from flask import make_response
 from flask import render_template
 from flask import session as login_session
 from item_catalog import db_actions
 import json
+
+
+def jsonize(input_var):
+    """Return pretty printed JSON version of <input_var>."""
+    return json.dumps(input_var,
+                      sort_keys=True,
+                      indent=4,
+                      separators=(',', ': '))
+
+
+def json_single(resource, exists):
+    """Return JSON response for single DB resource with serialize @property."""
+    if not exists:
+        response = make_response(jsonize('Resource does not exist.'), 404)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    try:
+        api_data = db_actions.serial_data(resource)
+        if api_data == "Failed to serialize data.":
+            res_code = 500
+        else:
+            res_code = 200
+    except Exception:
+        response = make_response(jsonize('Server error.'), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    response = make_response(jsonize(api_data), res_code)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+
+def json_catalog():
+    """Return JSON response with contents of entire catalog."""
+    res_code = 200
+    ser = db_actions.serial_data
+    api_data = {}
+    api_data['categories'] = {}
+    catalog_dict = api_data['categories']
+    categories = db_actions.all_category_infomation()
+    for category in categories:
+        catalog_dict[category.name] = ser(category)
+        catalog_dict[category.name]['items'] = {}
+        items = db_actions.all_items_in_category(category.id)
+        for item in items:
+            catalog_dict[category.name]['items'][item.name] = ser(item)
+    response = make_response(jsonize(api_data), res_code)
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 def check_category_exists(category_name):

@@ -168,8 +168,7 @@ def gconnect(request):
             login_session['user_id'] = db_actions.create_user(login_session)
     else:
         login_session['user_id'] = check_user
-    response = make_response(json.dumps('Successfully logged in.'),
-                             200)
+    response = make_response(json.dumps('Successfully logged in.'), 200)
     response.headers['Content-Type'] = 'application/json'
     return response
 
@@ -182,8 +181,8 @@ def gdisconnect():
         access_token = auth.access_token
     except Exception:
         if access_token is None:
-            response = make_response(json.dumps('Current user not connected.'),
-                                     401)
+            response = make_response(
+                json.dumps('Current user not connected.'), 401)
             response.headers['Content-Type'] = 'application/json'
             return response
     base_url = 'https://accounts.google.com/o/oauth2/revoke?token='
@@ -196,8 +195,7 @@ def gdisconnect():
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        response = make_response(json.dumps('Successfully logged out.'),
-                                 200)
+        response = make_response(json.dumps('Successfully logged out.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
     else:

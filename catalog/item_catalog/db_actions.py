@@ -5,7 +5,6 @@ from item_catalog import app
 from item_catalog import models
 import os
 
-
 # Category management
 
 
@@ -97,7 +96,6 @@ def cat_item_count(category_name):
         i_count = 0
     return i_count
 
-
 # Item management
 
 
@@ -177,8 +175,7 @@ def edit_item(old_item_name,
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
         item.name = bleach.clean(new_item_name)
-        item.description = bleach.clean(item_description,
-                                        tags=['br'])
+        item.description = bleach.clean(item_description, tags=['br'])
         item.price = bleach.clean(item_price)
         item.image = bleach.clean(item_image)
         item.category_id = bleach.clean(item_category)
@@ -207,7 +204,6 @@ def delete_item(item_name):
         models.DB.session.close()
     return True
 
-
 # Begin user management section
 
 
@@ -220,9 +216,8 @@ def create_user(login_session):
                                is_admin=False)
         models.DB.session.add(new_user)
         models.DB.session.commit()
-        user = models.DB.session.query(models.User
-                                       ).filter_by(email=login_session['email']
-                                                   ).one()
+        user = models.DB.session.query(models.User).filter_by(
+            email=login_session['email']).one()
     except Exception:
         return None
     finally:
@@ -244,8 +239,8 @@ def get_user_info(user_id):
 def get_user_id(email):
     """Get <user.id> for <email> from the database."""
     try:
-        user = models.DB.session.query(models.User).filter_by(email=email
-                                                              ).one()
+        user = models.DB.session.query(models.User).filter_by(
+            email=email).one()
         return user.id
     except Exception:
         return None
@@ -286,15 +281,27 @@ def create_admin(login_session):
                                 is_admin=True)
         models.DB.session.add(new_admin)
         models.DB.session.commit()
-        user = models.DB.session.query(models.User
-                                       ).filter_by(email=login_session['email']
-                                                   ).one()
+        user = models.DB.session.query(models.User).filter_by(
+            email=login_session['email']).one()
     except Exception:
         return None
     finally:
         models.DB.session.close()
     return user.id
 
+# Begin API functions
+
+
+def serial_data(obj):
+    """Return the serialized data for a given DB ORM object."""
+    try:
+        models.DB.session.add(obj)
+        serial = obj.serialize
+    except Exception:
+        return "Failed to serialize data."
+    finally:
+        models.DB.session.close()
+    return serial
 
 # Begin setup data section
 
@@ -302,8 +309,8 @@ def create_admin(login_session):
 def is_setup():
     """Check if the catalog is setup. Return True if so."""
     try:
-        s = models.DB.session.query(models.CatalogSettings
-                                    ).filter_by(propertyName='setup').one()
+        s = models.DB.session.query(models.CatalogSettings).filter_by(
+            propertyName='setup').one()
     except Exception:
         return False
     finally:
@@ -314,15 +321,14 @@ def is_setup():
 def disable_setup():
     """Disable catalog is setup. Return True if so."""
     try:
-        s = models.DB.session.query(models.CatalogSettings
-                                    ).filter_by(propertyName='setup').one()
+        s = models.DB.session.query(models.CatalogSettings).filter_by(
+            propertyName='setup').one()
         s.value = True
         models.DB.session.add(s)
         models.DB.session.commit()
         s_val = s.value
     except Exception:
-        setup = models.CatalogSettings(propertyName='setup',
-                                       value=True)
+        setup = models.CatalogSettings(propertyName='setup', value=True)
         models.DB.session.add(setup)
         models.DB.session.commit()
         s_val = setup.value
@@ -360,8 +366,7 @@ def sample_categories(user_id):
                      'Snowboarding', 'Rock Climbing', 'Foosball', 'Skating',
                      'Hockey']
     for category in category_list:
-        categoryobj = models.Category(name=b(category),
-                                      user_id=user_id)
+        categoryobj = models.Category(name=b(category), user_id=user_id)
         models.DB.session.add(categoryobj)
         models.DB.session.commit()
         models.DB.session.close()

@@ -32,7 +32,7 @@ Then, to connect to the instance:
 
 ## Function documentation
 
-For documentation on tournament.py, use sphinx. It will format the docstrings
+For documentation on this project, use sphinx. It will format the docstrings
 for easy to view output.
 
 ## Instance specific settings
@@ -54,5 +54,15 @@ Once the environment, vagrant or other is up and running visit `//server/login`.
  page will be disabled.
 
 ## JSON API
+
+The JSON API is located at `/api/json/` and mirrors the URL layout of user
+ facing pages.
+
+### Entire catalog
+
+### Category
+
+
+### Item
 
 ## Atom Feed
