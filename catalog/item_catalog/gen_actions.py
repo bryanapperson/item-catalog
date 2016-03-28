@@ -134,13 +134,11 @@ def upload_photo(request):
     """
     photo = request.files['product-photo']
     if photo and allowed_file(photo.filename):
-        print "adding photo"
         # Rename
         file_type = photo.filename.rsplit('.', 1)[1]
         filename = (request.form['name'] + '.' + file_type)
         filename = secure_filename(filename)
         save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        os.remove(save_path)
         photo.save(save_path)
         url_path = os.path.join(app.config['UPLOAD_URL_FOLDER'], filename)
         return url_path

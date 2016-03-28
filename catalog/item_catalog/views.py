@@ -11,6 +11,7 @@ from item_catalog import app
 from item_catalog import auth_manager
 from item_catalog import db_actions
 from item_catalog import gen_actions
+from item_catalog.nocache import nocache
 import os
 import urllib
 
@@ -590,11 +591,13 @@ def recent_atom():
 
 
 @app.route(app.config['UPLOAD_URL_FOLDER'] + '<filename>')
+@nocache
 def uploaded_photo(filename):
     # TODO(Test photo uploading and implement)
     """Serve uploaded photos."""
-
-    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    file_loc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    mime = ('image/' + (filename.rsplit('.', 1)[1]))
+    return send_file(file_loc, mimetype=mime)
 
 # General error handling
 
