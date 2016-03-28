@@ -29,11 +29,6 @@ Then, to connect to the instance:
 
 `vagrant ssh`
 
-### Running the Unit Tests
-
-To run the unit tests from within the vagrant VM:
-
-`cd /vagrant/site`
 
 ## Function documentation
 
@@ -45,3 +40,19 @@ for easy to view output.
 Settings for a particular instance of the item_catalog web application can be
 stored in `catalog/instance/config.py`. These settings will override settings
 in `catalog/config.py`.
+
+# Using item-catalog
+
+## Setting up item-catalog
+
+Once the environment, vagrant or other is up and running visit `//server/login`.
+ In the vagrant deployment that URL will be `http://localhost:8080/login`
+ upon visiting this page and logging in with Google connect you will be prompted
+ to complete a one time setup of the catalog. To install the sample data click
+ Load Sample Data. To skip sample data installation, click Skip Sample Data.
+ Once one of these buttons is pressed the catalog will be setup and the setup
+ page will be disabled.
+
+## JSON API
+
+## Atom Feed
