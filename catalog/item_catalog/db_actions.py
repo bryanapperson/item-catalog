@@ -149,15 +149,13 @@ def create_new_item(item_name,
     """
     try:
         b = bleach.clean
-        item_image = None
-        # TODO(Handle item image)
         if item_image is None:
             item_image = '/static/img/default/placeholder.png'
         new_item = models.CatalogItem(name=b(item_name),
                                       description=b(item_description,
                                                     tags=['br']),
                                       price=b(item_price),
-                                      image=b(item_image),
+                                      image=item_image,
                                       modified=datetime.now(),
                                       category_id=b(item_category),
                                       user_id=user_id)
@@ -182,19 +180,18 @@ def edit_item(old_item_name,
     """
     try:
         item = item_by_name(old_item_name)
-        item_image = None
-        # TODO(Handle item image)
         if item_image is None:
-            item_image = '/static/img/default/placeholder.png'
+            item_image = item.image
         item.name = bleach.clean(new_item_name)
         item.description = bleach.clean(item_description, tags=['br'])
         item.price = bleach.clean(item_price)
-        item.image = bleach.clean(item_image)
-        item.modified = datetime.now(),
+        item.image = item_image
+        item.modified = datetime.now()
         item.category_id = bleach.clean(item_category)
         models.DB.session.add(item)
         models.DB.session.commit()
-    except Exception:
+    except Exception as e:
+        print (e)
         return False
     finally:
         models.DB.session.close()

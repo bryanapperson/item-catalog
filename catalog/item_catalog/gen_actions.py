@@ -4,9 +4,12 @@ from flask import make_response
 from flask import render_template
 from flask import request
 from flask import session as login_session
+from item_catalog import app
 from item_catalog import db_actions
 import json
+import os
 from werkzeug.contrib.atom import AtomFeed
+from werkzeug.utils import secure_filename
 
 # JSON API Functions
 
@@ -116,6 +119,33 @@ def is_auth():
     if 'username' not in login_session:
         return False
     return True
+
+
+def allowed_file(filename):
+    """Check if filetype is allowed."""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+
+def upload_photo(request):
+    """Handle uploaded file in a request with key product-photo.
+
+    Return path where file was saved.
+    """
+    photo = request.files['product-photo']
+    if photo and allowed_file(photo.filename):
+        print "adding photo"
+        # Rename
+        file_type = photo.filename.rsplit('.', 1)[1]
+        filename = (request.form['name'] + '.' + file_type)
+        filename = secure_filename(filename)
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        os.remove(save_path)
+        photo.save(save_path)
+        url_path = os.path.join(app.config['UPLOAD_URL_FOLDER'], filename)
+        return url_path
+    else:
+        return None
 
 
 def return_404():

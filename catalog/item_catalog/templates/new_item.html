@@ -83,7 +83,7 @@
                 </div>
                 <div class="row">
                     <div class="12 columns">
-                        <form action="{{ url_for('new_item')}}" method="post">
+                        <form action="{{ url_for('new_item')}}" method="post" enctype="multipart/form-data">
                             <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                             <p>Item Name:</p>
                             <input type="text" size="30" name="name">
@@ -91,13 +91,16 @@
                             <input type="text" size="30" name="description">
                             <p>Item Price in USD($):</p>
                             <input type="number" step="0.01" value="0.00" placeholder="0.00" size="30" name="price">
+                            <p>Image:</p>
+                            <label for="product-photo" class="button">Upload File</label>
+                            <input type="file" id="product-photo" name="product-photo" class="show-for-sr">
                             <p>Category:</p>
                             <select name="category">
                                 {% for category in categories %}
                                 <option value="{{category.name}}">{{category.name}}</option>
                                 {% endfor %}
                             </select>
-                            <input type="submit" value="Create Item">
+                            <input type="submit" value="Create Item" class="success button">
                         </form>
                     </div>
                 </div>

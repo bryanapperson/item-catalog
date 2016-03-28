@@ -5,12 +5,13 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
-from flask import send_from_directory
+from flask import send_file
 from flask import url_for
 from item_catalog import app
 from item_catalog import auth_manager
 from item_catalog import db_actions
 from item_catalog import gen_actions
+import os
 import urllib
 
 # Home/Catalog main page
@@ -303,7 +304,6 @@ def new_item():
         item_price = request.form['price']
         category_name = request.form['category']
         user_id = auth_manager.get_session_user_id()
-        # TODO(Manage product photo item_image)
         # Check if the proposed item name already exists
         check = gen_actions.check_item_exists(item_name)
         exists, new_item = check
@@ -322,11 +322,15 @@ def new_item():
                   category="alert")
             return redirect(url_for('category_page',
                                     category_name=category_name))
+        # Handle photo upload
+        if 'product-photo' in request.files:
+            item_image = gen_actions.upload_photo(request)
         new = db_actions.create_new_item(item_name,
                                          item_description,
                                          item_price,
                                          cat_id,
-                                         user_id=user_id)
+                                         user_id=user_id,
+                                         item_image=item_image)
         if new:
             flash('New item added to catalog.', category="success")
             return redirect(url_for('item_page',
@@ -382,7 +386,6 @@ def edit_item(category_name, item_name):
         item_description = request.form['description']
         item_price = request.form['price']
         new_category_name = request.form['category']
-        # TODO(Manage product photo item_image)
         # Check if the proposed item name already exists
         check = gen_actions.check_item_exists(new_item_name)
         exists, new_item = check
@@ -397,9 +400,12 @@ def edit_item(category_name, item_name):
         # Proposed item name does not exist, proceed
         cat = db_actions.category_by_name(new_category_name)
         cat_id = cat.id
+        # Handle photo upload
+        if 'product-photo' in request.files:
+            item_image = gen_actions.upload_photo(request)
         new = db_actions.edit_item(item_name, new_item_name, item_description,
-                                   item_price, cat_id)
-        if new:
+                                   item_price, cat_id, item_image)
+        if new is True:
             flash('Item entry updated.', category="success")
             return redirect(url_for('item_page',
                                     category_name=category_name,
@@ -583,11 +589,12 @@ def recent_atom():
 # Static asset serving
 
 
-@app.route('/photos/<filename>')
+@app.route(app.config['UPLOAD_URL_FOLDER'] + '<filename>')
 def uploaded_photo(filename):
     # TODO(Test photo uploading and implement)
-    """Server uploaded photos."""
-    return send_from_directory(app.config['UPLOADED_PHOTOS_URL'], filename)
+    """Serve uploaded photos."""
+
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 # General error handling
 
