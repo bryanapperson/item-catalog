@@ -83,3 +83,11 @@ The item_catalog app supports ATOM feeds.
 This app contains CSRF protection as outlined here:
 
 `http://flask.pocoo.org/snippets/3/`
+
+## Photo Uploads
+
+On product creation or edition the ability to upload a photo is presented.
+ product photos are stored in `/vagrant/catalog/item_catalog/uploads/` by
+ default - relative to the applications directory. The absolute storage path
+ and upload url path are configurable in
+ `item_catalog/instance/instance_configuration.py`.
