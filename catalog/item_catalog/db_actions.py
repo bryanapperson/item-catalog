@@ -16,7 +16,6 @@ def make_external(url):
     """Get external URL."""
     return urljoin(request.url_root, url)
 
-
 # Category management
 
 

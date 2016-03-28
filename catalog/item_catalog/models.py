@@ -9,7 +9,6 @@ from urlparse import urljoin
 # Global database
 DB = SQLAlchemy(app)
 
-
 # Helper functions
 
 

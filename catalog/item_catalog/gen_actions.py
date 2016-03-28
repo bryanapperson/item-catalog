@@ -63,11 +63,9 @@ def json_catalog():
 
 def recent_items_atom_feed():
     """Return the 15 most recently added items as an ATOM feed response."""
-    feed = AtomFeed('Recent Items',
-                    feed_url=request.url, url=request.url_root)
+    feed = AtomFeed('Recent Items', feed_url=request.url, url=request.url_root)
     feed = db_actions.atom_items(feed, 15)
     return feed.get_response()
-
 
 # General Functions
 
