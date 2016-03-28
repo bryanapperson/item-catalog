@@ -28,3 +28,6 @@ from item_catalog import db_actions
 from item_catalog import gen_actions
 from item_catalog import models
 from item_catalog import views
+
+# Add anti-CSRF token
+app.jinja_env.globals['csrf_token'] = auth_manager.generate_csrf_token

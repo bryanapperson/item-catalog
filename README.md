@@ -75,3 +75,11 @@ The JSON API is located at `/api/json/` and mirrors the URL layout of user
 The item_catalog app supports ATOM feeds.
 
 ### Recently Added Items ATOM Feed
+
+`http://localhost:8080/feed/atom/catalog/recent`
+
+## CSRF Protection
+
+This app contains CSRF protection as outlined here:
+
+`http://flask.pocoo.org/snippets/3/`

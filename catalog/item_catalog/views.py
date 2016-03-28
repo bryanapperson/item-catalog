@@ -50,6 +50,8 @@ def setup_page():
         user_id = auth_manager.get_session_user_id()
         # Handle POST request
         if request.method == 'POST':
+            # Check CSRF token
+            auth_manager.check_csrf_token(request)
             # Handle sample data
             if request.form['setup'] == 'Load Sample Data':
                 # Make sure this user becomes admin
@@ -121,6 +123,8 @@ def new_category():
     user_id = auth_manager.get_session_user_id()
     # Handle POST for new_category
     if request.method == 'POST':
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         cat_name = request.form['name']
         # Check if the proposed category exists
         check = gen_actions.check_category_exists(cat_name)
@@ -170,6 +174,8 @@ def edit_category(category_name):
         return redirect(url_for('category_page', category_name=category_name))
     # Handle POST for edit_category
     if request.method == 'POST':
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         cat_name = request.form['name']
         # Check if the proposed category exists
         check = gen_actions.check_category_exists(cat_name)
@@ -226,6 +232,8 @@ def delete_category(category_name):
         return redirect(url_for('category_page', category_name=category_name))
     # Handle POST request
     if request.method == 'POST':
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         # Handle deletion
         if request.form['delete'] == 'Delete Category and Items':
             if db_actions.delete_category(category_name):
@@ -288,6 +296,8 @@ def new_item():
     user_id = auth_manager.get_session_user_id()
     # Manage post request for new_item
     if request.method == 'POST':
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         item_name = request.form['name']
         item_description = request.form['description']
         item_price = request.form['price']
@@ -366,6 +376,8 @@ def edit_item(category_name, item_name):
                                 item_name=item_name))
     # Handle POST request for edit_item
     if request.method == 'POST':
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         new_item_name = request.form['name']
         item_description = request.form['description']
         item_price = request.form['price']
@@ -437,6 +449,8 @@ def delete_item(category_name, item_name):
                                 item_name=item_name))
     # Handle POST request for delete_item
     if request.method == 'POST':
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         # Handle deletion
         # TODO(Handle item image deletion)
         if request.form['delete'] == 'Delete Item':
@@ -499,7 +513,6 @@ def login_register():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     """Dialog for logging out."""
-    # TODO(log out sucessfully view)
     # Redirect if not logged in
     if not auth_manager.is_auth():
         flash('You are not logged in.', category="primary")
@@ -508,7 +521,8 @@ def logout():
     state = auth_manager.set_login_state()
     categories = db_actions.all_category_infomation()
     if request.method == 'POST':
-        # Handle deletion
+        # Check CSRF token
+        auth_manager.check_csrf_token(request)
         # TODO(Handle item image deletion)
         if request.form['logout'] == 'Logout':
             result = auth_manager.logout_action()

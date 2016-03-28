@@ -2,6 +2,7 @@
 """Authorization management for the item_catalog application."""
 
 import base64
+from flask import abort
 from flask import flash
 from flask import make_response
 from flask import session as login_session
@@ -16,6 +17,22 @@ import OpenSSL
 import requests
 
 CLIENT_ID = gen_actions.read_json(app.config['CLIENT_SECRET'])
+
+
+def generate_csrf_token():
+    """Generate CSRF protection token."""
+    if '_csrf_token' not in login_session:
+        login_session['_csrf_token'] = generate_session_id(num_bytes=32)
+    return login_session['_csrf_token']
+
+
+def check_csrf_token(request):
+    """Check the CSRF token in a request."""
+    # Test case for CSRF
+    # token = generate_session_id(num_bytes=32)
+    token = login_session.pop('_csrf_token', None)
+    if not token or token != request.form.get('_csrf_token'):
+        abort(403)
 
 
 def generate_session_id(num_bytes=32):

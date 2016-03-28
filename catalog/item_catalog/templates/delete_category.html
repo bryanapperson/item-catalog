@@ -92,6 +92,7 @@
                             <div class="row">
                                 <div class="12 columns">
                                     <div class="text-center">
+                                        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                                         <input type="submit" name="delete" value="Delete Category and Items" class="alert button">
                                         <input type="submit" name="delete" value="Cancel" class="success button">
                                     </div>

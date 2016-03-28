@@ -95,6 +95,7 @@
                             <div class="row">
                                 <div class="12 columns">
                                     <div class="text-center">
+                                        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                                         <input type="submit" name="setup" value="Load Sample Data" class="success button">
                                         <input type="submit" name="setup" value="Skip Sample Data" class="alert button">
                                     </div>

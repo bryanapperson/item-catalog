@@ -84,6 +84,7 @@
                 <div class="row">
                     <div class="12 columns">
                         <form action="{{ url_for('edit_item', category_name=category.name, item_name=item.name)}}" method="post">
+                            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                             <p>Item Name:</p>
                             <input type="text" size="30" value="{{item.name}}" placeholder="{{item.name}}" name="name">
                             <p>Item Description:</p>
