@@ -57,8 +57,13 @@ def is_admin():
     """Return false if user is not an authorized/logged in admin."""
     if not is_auth():
         return False
-    user_id = get_session_user_id()
-    user = db_actions.get_user_info(user_id)
+    try:
+        user_id = get_session_user_id()
+        user = db_actions.get_user_info(user_id)
+    except Exception:
+        return False
+    if user.is_admin is None:
+        return False
     return user.is_admin
 
 
@@ -71,7 +76,7 @@ def auth_item(item):
     if user_id == item.user_id:
         item_auth = True
     # Is the user admin?
-    if is_admin():
+    if is_admin() is True:
         return True
     return item_auth
 
@@ -85,7 +90,7 @@ def auth_category(category):
     if user_id == category.user_id:
         cat_auth = True
     # Is the user admin?
-    if is_admin():
+    if is_admin() is True:
         return True
     return cat_auth
 
@@ -183,8 +188,8 @@ def gconnect(request):
             login_session['user_id'] = db_actions.create_admin(login_session)
         else:
             login_session['user_id'] = db_actions.create_user(login_session)
-    else:
-        login_session['user_id'] = check_user
+    # Get final user ID
+    login_session['user_id'] = db_actions.get_user_id(login_session['email'])
     response = make_response(json.dumps('Successfully logged in.'), 200)
     response.headers['Content-Type'] = 'application/json'
     return response

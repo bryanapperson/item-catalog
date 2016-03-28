@@ -254,11 +254,12 @@ def get_user_id(email):
     try:
         user = models.DB.session.query(models.User).filter_by(
             email=email).one()
-        return user.id
+        u_id = user.id
     except Exception:
         return None
     finally:
         models.DB.session.close()
+    return u_id
 
 
 def count_users():
