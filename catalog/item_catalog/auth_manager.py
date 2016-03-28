@@ -36,6 +36,28 @@ def is_auth():
     return True
 
 
+def auth_item(item):
+    """Return True if user is authorized to edit item."""
+    item_auth = False
+    # Get user id
+    user_id = get_session_user_id()
+    # Is the user authorized?
+    if user_id == item.user_id:
+        item_auth = True
+    return item_auth
+
+
+def auth_category(category):
+    """Return True if user is authorized to edit category."""
+    cat_auth = False
+    # Get user id
+    user_id = get_session_user_id()
+    # Is the user authorized?
+    if user_id == category.user_id:
+        cat_auth = True
+    return cat_auth
+
+
 def get_session_user_id():
     """Return session <user_id>."""
     user_id = login_session['user_id']

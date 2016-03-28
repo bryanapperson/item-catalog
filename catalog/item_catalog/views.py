@@ -26,7 +26,8 @@ def index_page():
     return render_template('index.html',
                            categories=categories,
                            page_items=recent_items,
-                           pagename=page)
+                           pagename=page,
+                           logged_in=auth_manager.is_auth())
 
 # Catalog management - not implemented
 
@@ -45,7 +46,7 @@ def category_page(category_name):
     """Display items in <category_name> category."""
     # Handle categories that don't exist
     exists, category_info = gen_actions.check_category_exists(category_name)
-    if exists is False:
+    if not exists:
         return gen_actions.return_404()
     # Setup initial values
     num_items = 0
@@ -59,14 +60,17 @@ def category_page(category_name):
                            categories=categories,
                            category_info=category_info,
                            page_items=items,
-                           pagename=page)
+                           pagename=page,
+                           logged_in=auth_manager.is_auth(),
+                           cat_auth=auth_manager.auth_category(category_info))
 
 
 @app.route('/action/catalog/new_category/', methods=['GET', 'POST'])
 def new_category():
     """Dialog for adding a new category to the catalog."""
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    # Check if user is logged in
+    if not auth_manager.is_auth():
         flash('You must login to access this page.', category="primary")
         return redirect(url_for('login_register'))
     # Get user id
@@ -77,7 +81,7 @@ def new_category():
         # Check if the proposed category exists
         check = gen_actions.check_category_exists(cat_name)
         exists, cat = check
-        if exists is True:
+        if exists:
             # This category already exists
             flash('Failed to create new category. ' +
                   'This category name already exists. ' +
@@ -87,7 +91,7 @@ def new_category():
         # Proposed category does not exist, proceed.
         new = db_actions.create_new_category(cat_name, user_id)
         # Did we successfully create the new category?
-        if new is True:
+        if new:
             flash('Category added to catalog.', category="success")
             return redirect(url_for('category_page', category_name=cat_name))
         else:
@@ -100,7 +104,8 @@ def new_category():
         pagename = "Create A New Category"
         return render_template('new_category.html',
                                categories=categories,
-                               pagename=pagename)
+                               pagename=pagename,
+                               logged_in=auth_manager.is_auth())
 
 
 @app.route('/action/catalog/<string:category_name>/edit_category/',
@@ -109,16 +114,13 @@ def edit_category(category_name):
     """Dialog for adding a new item to the catalog."""
     # Check if category exists otherwise return 404
     exists, category_info = gen_actions.check_category_exists(category_name)
-    if exists is False:
+    if not exists:
         return gen_actions.return_404()
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    if not auth_manager.is_auth():
         flash('You must login to access this page.', category="primary")
         return redirect(url_for('login_register'))
-    # Get user id
-    user_id = auth_manager.get_session_user_id()
-    # Is the user authorized?
-    if user_id != category_info.user_id:
+    if not auth_manager.auth_category(category_info):
         flash('You are not authorized to edit this category.',
               category="alert")
         return redirect(url_for('category_page',
@@ -129,7 +131,7 @@ def edit_category(category_name):
         # Check if the proposed category exists
         check = gen_actions.check_category_exists(cat_name)
         exists, cat = check
-        if exists is True and category_name != cat_name:
+        if exists and category_name != cat_name:
             # This category already exists
             flash('Failed to edit category. ' +
                   'The proposed category name already exists. ' +
@@ -139,7 +141,7 @@ def edit_category(category_name):
                                     category_name=category_name))
         # Proposed category does not exist, proceed.
         new = db_actions.edit_category(category_info.name, cat_name)
-        if new is True:
+        if new:
             flash('Category entry edited.', category="success")
             return redirect(url_for('category_page', category_name=cat_name))
         else:
@@ -149,12 +151,15 @@ def edit_category(category_name):
                                     category_name=category_name))
     # Handle GET request
     else:
+        cat = category_info
         categories = db_actions.all_category_infomation()
         pagename = ("Update Category: " + category_info.name)
         return render_template('edit_category.html',
                                pagename=pagename,
                                categories=categories,
-                               category=category_info)
+                               category=category_info,
+                               logged_in=auth_manager.is_auth(),
+                               cat_auth=auth_manager.auth_category(cat))
 
 
 @app.route('/action/catalog/<string:category_name>/delete_category/',
@@ -163,10 +168,10 @@ def delete_category(category_name):
     """Dialog for deleteing a category from the catalog."""
     # Check if category exists otherwise return 404
     exists, category_info = gen_actions.check_category_exists(category_name)
-    if exists is False:
+    if not exists:
         return gen_actions.return_404()
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    if not auth_manager.is_auth():
         flash('You must login to access this page.', category="primary")
         return redirect(url_for('login_register'))
     # Get user id
@@ -181,7 +186,7 @@ def delete_category(category_name):
     if request.method == 'POST':
         # Handle deletion
         if request.form['delete'] == 'Delete Category and Items':
-            if db_actions.delete_category(category_name) is True:
+            if db_actions.delete_category(category_name):
                 flash('Category deleted from catalog.', category="success")
                 return redirect(url_for('index_page'))
             else:
@@ -195,12 +200,15 @@ def delete_category(category_name):
                                     category_name=category_name))
     # Handle GET request
     else:
+        cat = category_info
         categories = db_actions.all_category_infomation()
         pagename = ("Delete Category: " + category_name)
         return render_template('delete_category.html',
                                categories=categories,
                                category=category_info,
-                               pagename=pagename)
+                               pagename=pagename,
+                               logged_in=auth_manager.is_auth(),
+                               cat_auth=auth_manager.auth_category(cat))
 
 # Item management
 
@@ -213,7 +221,7 @@ def item_page(category_name, item_name):
     # Return 404.
     exists, category, item = gen_actions.check_cat_item_exists(category_name,
                                                                item_name)
-    if exists is False:
+    if not exists:
         return gen_actions.return_404()
     # The item and category exist, build the page.
     page = item_name
@@ -221,14 +229,17 @@ def item_page(category_name, item_name):
                            categories=categories,
                            category_info=category,
                            page_item=item,
-                           pagename=page)
+                           pagename=page,
+                           cat_auth=auth_manager.auth_category(category),
+                           item_auth=auth_manager.auth_item(item),
+                           logged_in=auth_manager.is_auth())
 
 
 @app.route('/action/catalog/new_item/', methods=['GET', 'POST'])
 def new_item():
     """Dialog for adding a new item to a given <category_name>."""
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    if not auth_manager.is_auth():
         flash('You must login to access this page.', category="primary")
         return redirect(url_for('login_register'))
     # Get user id
@@ -244,7 +255,7 @@ def new_item():
         # Check if the proposed item name already exists
         check = gen_actions.check_item_exists(item_name)
         exists, new_item = check
-        if exists is True:
+        if exists:
             # Flash message on failure
             flash('Failed to create item. Another item with the same name ' +
                   'already exists. Please try another name.',
@@ -261,7 +272,7 @@ def new_item():
                             category_name=category_name))
         new = db_actions.create_new_item(item_name, item_description,
                                          item_price, cat_id, user_id=user_id)
-        if new is True:
+        if new:
             flash('New item added to catalog.', category="success")
             return redirect(url_for('item_page',
                                     category_name=category_name,
@@ -283,7 +294,8 @@ def new_item():
             return redirect(url_for('new_category'))
         return render_template('new_item.html',
                                categories=categories,
-                               pagename=pagename)
+                               pagename=pagename,
+                               logged_in=auth_manager.is_auth())
 
 
 @app.route('/action/catalog/<string:category_name>/<string:item_name>/'
@@ -295,16 +307,14 @@ def edit_item(category_name, item_name):
     # Return 404.
     exists, category, item = gen_actions.check_cat_item_exists(category_name,
                                                                item_name)
-    if exists is False:
+    if not exists:
         return gen_actions.return_404()
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    if not auth_manager.is_auth():
         flash('You must login to access this page.', category="primary")
         return redirect(url_for('login_register'))
-    # Get user id
-    user_id = auth_manager.get_session_user_id()
     # Is the user authorized?
-    if user_id != item.user_id:
+    if not auth_manager.auth_item(item):
         flash('You are not authorized to edit this item.', category="alert")
         return redirect(url_for('item_page',
                         category_name=category_name,
@@ -319,7 +329,7 @@ def edit_item(category_name, item_name):
         # Check if the proposed item name already exists
         check = gen_actions.check_item_exists(new_item_name)
         exists, new_item = check
-        if exists is True and new_item_name != item_name:
+        if exists and new_item_name != item_name:
             # Flash message on failure
             flash('Failed to edit item. Another item with the same name ' +
                   'already exists. Please try another name.',
@@ -332,7 +342,7 @@ def edit_item(category_name, item_name):
         cat_id = cat.id
         new = db_actions.edit_item(item_name, new_item_name, item_description,
                                    item_price, cat_id)
-        if new is True:
+        if new:
             flash('Item entry updated.', category="success")
             return redirect(url_for('item_page',
                                     category_name=category_name,
@@ -351,8 +361,12 @@ def edit_item(category_name, item_name):
         return render_template('edit_item.html',
                                categories=categories,
                                category=category,
+                               category_info=category,
                                item=item,
-                               pagename=pagename)
+                               pagename=pagename,
+                               logged_in=auth_manager.is_auth(),
+                               item_auth=auth_manager.auth_item(item),
+                               cat_auth=auth_manager.auth_category(category))
 
 
 @app.route('/action/catalog/<string:category_name>/<string:item_name>/'
@@ -364,16 +378,14 @@ def delete_item(category_name, item_name):
     # Return 404.
     exists, category, item = gen_actions.check_cat_item_exists(category_name,
                                                                item_name)
-    if exists is False:
+    if not exists:
         return gen_actions.return_404()
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    if not auth_manager.is_auth():
         flash('You must login to access this page.', category="primary")
         return redirect(url_for('login_register'))
-    # Get user id
-    user_id = auth_manager.get_session_user_id()
-    # Redirect and flash if user is not owner of this Item
-    if user_id != item.user_id:
+    # Redirect and flash if user is not authorized to alter this item
+    if not auth_manager.auth_item(item):
         flash('You are not authorized to delete this item.', category="alert")
         return redirect(url_for('item_page',
                         category_name=category_name,
@@ -383,7 +395,7 @@ def delete_item(category_name, item_name):
         # Handle deletion
         # TODO(Handle item image deletion)
         if request.form['delete'] == 'Delete Item':
-            if db_actions.delete_item(item_name) is True:
+            if db_actions.delete_item(item_name):
                 flash('Item deleted from catalog.', category="success")
                 return redirect(url_for('category_page',
                                         category_name=category_name))
@@ -405,8 +417,12 @@ def delete_item(category_name, item_name):
         return render_template('delete_item.html',
                                categories=categories,
                                category=category,
+                               category_info=category,
                                page_item=item,
-                               pagename=pagename)
+                               pagename=pagename,
+                               logged_in=auth_manager.is_auth(),
+                               item_auth=auth_manager.auth_item(item),
+                               cat_auth=auth_manager.auth_category(category))
 
 # User Authentication
 
@@ -416,7 +432,7 @@ def login_register():
     """Dialog for registering or logging in."""
     # TODO(login or register view)
     # Redirect if logged in
-    if auth_manager.is_auth() is True:
+    if auth_manager.is_auth():
         flash('You are already logged in.', category="primary")
         return redirect(url_for('logout'))
     pagename = "Login or Register"
@@ -425,7 +441,8 @@ def login_register():
     return render_template('login.html',
                            categories=categories,
                            pagename=pagename,
-                           state=urllib.quote(state.encode("utf-8")))
+                           state=urllib.quote(state.encode("utf-8")),
+                           logged_in=auth_manager.is_auth())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -433,7 +450,7 @@ def logout():
     """Dialog for logging out."""
     # TODO(log out sucessfully view)
     # Redirect if not logged in
-    if auth_manager.is_auth() is False:
+    if not auth_manager.is_auth():
         flash('You are not logged in.', category="primary")
         return redirect(url_for('login_register'))
     pagename = "Logout"
@@ -449,7 +466,8 @@ def logout():
     return render_template('logout.html',
                            categories=categories,
                            pagename=pagename,
-                           state=urllib.quote(state.encode("utf-8")))
+                           state=urllib.quote(state.encode("utf-8")),
+                           logged_in=auth_manager.is_auth())
 
 
 @app.route('/gconnect', methods=['POST'])

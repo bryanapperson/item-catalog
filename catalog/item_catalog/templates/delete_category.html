@@ -17,19 +17,27 @@
             </div>
             <div class="top-bar-right">
                 <ul class="menu">
+                    {% if logged_in == True %}
                     <li class="menu-text"><a href="{{ url_for('new_category') }}">New Category</a></li>
                     {% if category_info %}
+                    {% if cat_auth == True %}
                     <li class="menu-text"><a href="{{ url_for('edit_category', category_name=category_info.name) }}">Edit Category</a></li>
                     <li class="menu-text"><a href="{{ url_for('delete_category', category_name=category_info.name)}}">Delete Category</a></li>
+                    {% endif %}
                     {% endif %}
                     <li class="menu-text"><a href="{{ url_for('new_item') }}">New Item</a></li>
                     {% if category_info %}
                     {% if page_item %}
+                    {% if item_auth == True %}
                     <li class="menu-text"><a href="{{ url_for('edit_item', category_name=category_info.name, item_name=page_item.name) }}">Edit Item</a></li>
                     <li class="menu-text"><a href="{{ url_for('delete_item', category_name=category_info.name, item_name=page_item.name)}}">Delete Item</a></li>
                     {% endif %}
                     {% endif %}
+                    {% endif %}
+                    <li class="menu-text"><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
                     <li class="menu-text"><a href="{{ url_for('login_register') }}">Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
