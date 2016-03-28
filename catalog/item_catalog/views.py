@@ -564,8 +564,7 @@ def catalog_json():
 @app.route('/feed/atom/catalog/recent')
 def recent_atom():
     """ATOM feed for recent items."""
-    # TODO(ATOM API/feed for recent items)
-    return gen_actions.return_404()
+    return gen_actions.recent_items_atom_feed()
 
 # Static asset serving
 

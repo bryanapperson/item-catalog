@@ -2,9 +2,13 @@
 """General actions for the item_catalog application."""
 from flask import make_response
 from flask import render_template
+from flask import request
 from flask import session as login_session
 from item_catalog import db_actions
 import json
+from werkzeug.contrib.atom import AtomFeed
+
+# JSON API Functions
 
 
 def jsonize(input_var):
@@ -53,6 +57,19 @@ def json_catalog():
     response = make_response(jsonize(api_data), res_code)
     response.headers['Content-Type'] = 'application/json'
     return response
+
+# ATOM feed functions
+
+
+def recent_items_atom_feed():
+    """Return the 15 most recently added items as an ATOM feed response."""
+    feed = AtomFeed('Recent Items',
+                    feed_url=request.url, url=request.url_root)
+    feed = db_actions.atom_items(feed, 15)
+    return feed.get_response()
+
+
+# General Functions
 
 
 def check_category_exists(category_name):

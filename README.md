@@ -60,9 +60,18 @@ The JSON API is located at `/api/json/` and mirrors the URL layout of user
 
 ### Entire catalog
 
+`http://localhost:8080/api/json/catalog/`
+
 ### Category
 
+`http://localhost:8080/api/json/catalog/category_name/`
 
 ### Item
 
+`http://localhost:8080/api/json/catalog/category_name/item_name/`
+
 ## Atom Feed
+
+The item_catalog app supports ATOM feeds.
+
+### Recently Added Items ATOM Feed

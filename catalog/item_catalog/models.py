@@ -1,11 +1,21 @@
 #!/usr/bin/env python
 """Data models for the item_catalog application."""
 
+from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from item_catalog import app
+from urlparse import urljoin
 
 # Global database
 DB = SQLAlchemy(app)
+
+
+# Helper functions
+
+
+def make_external(url):
+    """Get external URL."""
+    return urljoin(request.url_root, url)
 
 
 class CatalogMeta(DB.Model):
@@ -85,6 +95,7 @@ class CatalogItem(DB.Model):
     description = DB.Column(DB.String(250))
     price = DB.Column(DB.Numeric(scale=2))
     image = DB.Column(DB.String(2000))
+    modified = DB.Column(DB.Date)
     category_id = DB.Column(DB.Integer, DB.ForeignKey('categories.id'))
     category = DB.relationship(Category)
     user_id = DB.Column(DB.Integer, DB.ForeignKey('users.id'))
@@ -98,7 +109,7 @@ class CatalogItem(DB.Model):
             'id': self.id,
             'description': self.description,
             'price': float(self.price),
-            'image': self.image,
+            'image': make_external(self.image),
             'category_id': self.category_id,
             'category_name': self.category.name,
             'user_id': self.user_id

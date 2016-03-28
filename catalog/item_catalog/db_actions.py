@@ -1,9 +1,21 @@
 #!/usr/bin/env python
 """Database actions module."""
 import bleach
+from datetime import datetime
+from flask import request
+from flask import url_for
 from item_catalog import app
 from item_catalog import models
 import os
+from urlparse import urljoin
+
+# Helper functions
+
+
+def make_external(url):
+    """Get external URL."""
+    return urljoin(request.url_root, url)
+
 
 # Category management
 
@@ -147,6 +159,7 @@ def create_new_item(item_name,
                                                     tags=['br']),
                                       price=b(item_price),
                                       image=b(item_image),
+                                      modified=datetime.now(),
                                       category_id=b(item_category),
                                       user_id=user_id)
         models.DB.session.add(new_item)
@@ -178,6 +191,7 @@ def edit_item(old_item_name,
         item.description = bleach.clean(item_description, tags=['br'])
         item.price = bleach.clean(item_price)
         item.image = bleach.clean(item_image)
+        item.modified = datetime.now(),
         item.category_id = bleach.clean(item_category)
         models.DB.session.add(item)
         models.DB.session.commit()
@@ -303,6 +317,28 @@ def serial_data(obj):
         models.DB.session.close()
     return serial
 
+
+def atom_items(feed, number_items):
+    """Add items to ATOM feed from DB."""
+    items = recent_items(number_items)
+    for item in items:
+        models.DB.session.add(item)
+        feed.add(title=item.name,
+                 id=item.id,
+                 url=make_external(url_for('item_page',
+                                           item_name=item.name,
+                                           category_name=item.category.name)),
+                 summary=unicode(item.description),
+                 content_type='html',
+                 price=item.price,
+                 category_id=item.category_id,
+                 image=make_external(item.image),
+                 category_name=item.category.name,
+                 user_id=item.user_id,
+                 updated=item.modified)
+    models.DB.session.close()
+    return feed
+
 # Begin setup data section
 
 
@@ -393,6 +429,7 @@ def sample_items(user_id):
                                      category_id=b(category),
                                      price=b(float(price)),
                                      description=b(desc),
+                                     modified=datetime.now(),
                                      image=b(item_image),
                                      user_id=user_id)
         models.DB.session.add(itemobj)
